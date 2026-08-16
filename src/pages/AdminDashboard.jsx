@@ -52,7 +52,7 @@ const AdminDashboard = () => {
       .upload(fileName, file);
 
     if (uploadError) {
-      alert('Gagal upload gambar. Pastikan Storage Supabase sudah diatur.');
+      alert('Gagal upload gambar. Error: ' + uploadError.message);
       setUploadingImage(false);
       return;
     }
