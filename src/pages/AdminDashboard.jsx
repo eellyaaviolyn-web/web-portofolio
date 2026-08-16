@@ -1,96 +1,121 @@
 import React, { useState, useEffect } from 'react';
 import { useNavigate } from 'react-router-dom';
 import { motion, AnimatePresence } from 'framer-motion';
+import { supabase } from '../lib/supabase';
 
 const AdminDashboard = () => {
   const navigate = useNavigate();
-  const [activeTab, setActiveTab] = useState('projects'); // 'projects' or 'blogs'
+  const [activeTab, setActiveTab] = useState('projects'); 
   
-  // --- Projects State ---
-  const [projects, setProjects] = useState(() => {
-    const saved = localStorage.getItem('portfolio_projects');
-    if (saved) return JSON.parse(saved);
-    return [
-      { id: 1, title: 'E-commerce App', description: 'A fullstack e-commerce site.', link: '#', image: 'https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=800&q=80' },
-      { id: 2, title: 'Weather Dashboard', description: 'Real-time weather application.', link: '#', image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80' }
-    ];
-  });
+  const [projects, setProjects] = useState([]);
   const [editingProject, setEditingProject] = useState(null);
   const [editForm, setEditForm] = useState({ title: '', description: '', link: '', image: '' });
   const [isAdding, setIsAdding] = useState(false);
   const [addForm, setAddForm] = useState({ title: '', description: '', link: '', image: '' });
 
-  // --- Blogs State ---
-  const [blogs, setBlogs] = useState(() => {
-    const saved = localStorage.getItem('portfolio_blogs');
-    if (saved) return JSON.parse(saved);
-    return [
-      { id: 1, title: 'Memahami React Hooks', date: '12 Mei 2026', excerpt: 'React Hooks mengubah cara kita menulis komponen fungsional dengan state dan efek samping.', link: '#' },
-      { id: 2, title: 'Styling Modern dengan Tailwind CSS', date: '05 April 2026', excerpt: 'Mengapa utility-first CSS framework seperti Tailwind sangat populer di kalangan developer frontend.', link: '#' }
-    ];
-  });
+  const [blogs, setBlogs] = useState([]);
   const [editingBlog, setEditingBlog] = useState(null);
   const [editBlogForm, setEditBlogForm] = useState({ title: '', date: '', excerpt: '', link: '' });
   const [isAddingBlog, setIsAddingBlog] = useState(false);
   const [addBlogForm, setAddBlogForm] = useState({ title: '', date: '', excerpt: '', link: '' });
+  
+  const [uploadingImage, setUploadingImage] = useState(false);
 
-  // Effects
+  // Fetch data
   useEffect(() => {
-    try {
-      localStorage.setItem('portfolio_projects', JSON.stringify(projects));
-    } catch (e) {
-      alert("Penyimpanan browser penuh! Gambar yang diupload mungkin terlalu besar.");
-    }
-  }, [projects]);
-
-  useEffect(() => {
-    localStorage.setItem('portfolio_blogs', JSON.stringify(blogs));
-  }, [blogs]);
+    const fetchData = async () => {
+      const { data: pData } = await supabase.from('projects').select('*').order('created_at', { ascending: false });
+      if (pData) setProjects(pData);
+      
+      const { data: bData } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
+      if (bData) setBlogs(bData);
+    };
+    fetchData();
+  }, []);
 
   const handleLogout = () => {
     localStorage.removeItem('isAdminLoggedIn');
     navigate('/');
   };
 
-  // --- Shared Handlers ---
-  const handleImageUpload = (e, setFormFunc, currentForm) => {
+  // Image Upload to Supabase
+  const handleImageUpload = async (e, setFormFunc, currentForm) => {
     const file = e.target.files[0];
-    if (file) {
-      const reader = new FileReader();
-      reader.onloadend = () => {
-        setFormFunc({ ...currentForm, image: reader.result });
-      };
-      reader.readAsDataURL(file);
+    if (!file) return;
+
+    setUploadingImage(true);
+    const fileExt = file.name.split('.').pop();
+    const fileName = `${Date.now()}.${fileExt}`;
+
+    const { error: uploadError } = await supabase.storage
+      .from('portfolio_images')
+      .upload(fileName, file);
+
+    if (uploadError) {
+      alert('Gagal upload gambar. Pastikan Storage Supabase sudah diatur.');
+      setUploadingImage(false);
+      return;
+    }
+
+    const { data } = supabase.storage.from('portfolio_images').getPublicUrl(fileName);
+    setFormFunc({ ...currentForm, image: data.publicUrl });
+    setUploadingImage(false);
+  };
+
+  // Projects Handlers
+  const saveNewProject = async () => {
+    const newProject = { ...addForm };
+    if(!newProject.image) newProject.image = 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80';
+    
+    const { data, error } = await supabase.from('projects').insert([newProject]).select();
+    if (data) {
+      setProjects([data[0], ...projects]);
+      setIsAdding(false);
+    } else {
+      alert("Error: " + error?.message);
+    }
+  };
+  const handleDeleteProject = async (id) => {
+    await supabase.from('projects').delete().eq('id', id);
+    setProjects(projects.filter(p => p.id !== id));
+  };
+  const saveEditProject = async (id) => {
+    const { data, error } = await supabase.from('projects').update(editForm).eq('id', id).select();
+    if (data) {
+      setProjects(projects.map(p => p.id === id ? data[0] : p));
+      setEditingProject(null);
+    } else {
+      alert("Error: " + error?.message);
     }
   };
 
-  // --- Projects Handlers ---
-  const saveNewProject = () => {
-    const newProject = { id: Date.now(), ...addForm };
-    if(!newProject.image) newProject.image = 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80';
-    setProjects([newProject, ...projects]);
-    setIsAdding(false);
-  };
-  const handleDeleteProject = (id) => setProjects(projects.filter(p => p.id !== id));
-  const saveEditProject = (id) => {
-    setProjects(projects.map(p => p.id === id ? { ...p, ...editForm } : p));
-    setEditingProject(null);
-  };
-
-  // --- Blogs Handlers ---
-  const saveNewBlog = () => {
-    const newBlog = { id: Date.now(), ...addBlogForm };
+  // Blogs Handlers
+  const saveNewBlog = async () => {
+    const newBlog = { ...addBlogForm };
     if(!newBlog.date) {
       const now = new Date();
       newBlog.date = `${now.getDate()} ${now.toLocaleString('default', { month: 'long' })} ${now.getFullYear()}`;
     }
-    setBlogs([newBlog, ...blogs]);
-    setIsAddingBlog(false);
+    const { data, error } = await supabase.from('blogs').insert([newBlog]).select();
+    if (data) {
+      setBlogs([data[0], ...blogs]);
+      setIsAddingBlog(false);
+    } else {
+      alert("Error: " + error?.message);
+    }
   };
-  const handleDeleteBlog = (id) => setBlogs(blogs.filter(b => b.id !== id));
-  const saveEditBlog = (id) => {
-    setBlogs(blogs.map(b => b.id === id ? { ...b, ...editBlogForm } : b));
-    setEditingBlog(null);
+  const handleDeleteBlog = async (id) => {
+    await supabase.from('blogs').delete().eq('id', id);
+    setBlogs(blogs.filter(b => b.id !== id));
+  };
+  const saveEditBlog = async (id) => {
+    const { data, error } = await supabase.from('blogs').update(editBlogForm).eq('id', id).select();
+    if (data) {
+      setBlogs(blogs.map(b => b.id === id ? data[0] : b));
+      setEditingBlog(null);
+    } else {
+      alert("Error: " + error?.message);
+    }
   };
 
   return (
@@ -168,7 +193,9 @@ const AdminDashboard = () => {
                       </div>
                       <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
                         <button className="btn btn-outline" onClick={() => setIsAdding(false)}>Cancel</button>
-                        <button className="btn btn-primary" onClick={saveNewProject}>Save Project</button>
+                        <button className="btn btn-primary" onClick={saveNewProject} disabled={uploadingImage}>
+                          {uploadingImage ? 'Uploading...' : 'Save Project'}
+                        </button>
                       </div>
                     </div>
                   </motion.div>
@@ -190,7 +217,9 @@ const AdminDashboard = () => {
                         </div>
                         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
                           <button className="btn btn-outline" onClick={() => setEditingProject(null)}>Cancel</button>
-                          <button className="btn btn-primary" onClick={() => saveEditProject(project.id)}>Save Changes</button>
+                          <button className="btn btn-primary" onClick={() => saveEditProject(project.id)} disabled={uploadingImage}>
+                            {uploadingImage ? 'Uploading...' : 'Save Changes'}
+                          </button>
                         </div>
                       </div>
                     ) : (

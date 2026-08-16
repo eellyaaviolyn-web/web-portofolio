@@ -5,45 +5,52 @@ import SpotlightCard from './SpotlightCard';
 import TextScramble from './TextScramble';
 import LiquidImage from './LiquidImage';
 import GsapReveal from './GsapReveal';
+import { supabase } from '../lib/supabase';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
   const { t } = useContext(LanguageContext);
 
   useEffect(() => {
-    // Load projects from localStorage (synced with AdminDashboard)
-    const savedProjects = localStorage.getItem('portfolio_projects');
-    if (savedProjects) {
-      setProjects(JSON.parse(savedProjects));
-    } else {
-      // Fallback Data if empty
-      setProjects([
-        {
-          id: 1,
-          title: 'E-commerce App',
-          description: 'A modern fullstack e-commerce solution with React and Node.js.',
-          link: '#',
-          image: 'https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=800&q=80',
-          themeColor: '#8b5cf6' // Violet
-        },
-        {
-          id: 2,
-          title: 'Weather Dashboard',
-          description: 'Real-time weather tracking using OpenWeather API.',
-          link: '#',
-          image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80',
-          themeColor: '#0ea5e9' // Sky Blue
-        },
-        {
-          id: 3,
-          title: 'Task Management',
-          description: 'A drag-and-drop task management tool built with Vite.',
-          link: '#',
-          image: 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80',
-          themeColor: '#f43f5e' // Rose
-        }
-      ]);
-    }
+    const fetchProjects = async () => {
+      const { data, error } = await supabase
+        .from('projects')
+        .select('*')
+        .order('created_at', { ascending: false });
+        
+      if (data && data.length > 0) {
+        setProjects(data);
+      } else {
+        // Fallback Data if empty
+        setProjects([
+          {
+            id: 1,
+            title: 'E-commerce App',
+            description: 'A modern fullstack e-commerce solution with React and Node.js.',
+            link: '#',
+            image: 'https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=800&q=80',
+            themeColor: '#8b5cf6' // Violet
+          },
+          {
+            id: 2,
+            title: 'Weather Dashboard',
+            description: 'Real-time weather tracking using OpenWeather API.',
+            link: '#',
+            image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80',
+            themeColor: '#0ea5e9' // Sky Blue
+          },
+          {
+            id: 3,
+            title: 'Task Management',
+            description: 'A drag-and-drop task management tool built with Vite.',
+            link: '#',
+            image: 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80',
+            themeColor: '#f43f5e' // Rose
+          }
+        ]);
+      }
+    };
+    fetchProjects();
   }, []);
 
   const containerVariants = {
