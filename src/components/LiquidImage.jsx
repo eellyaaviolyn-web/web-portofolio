@@ -1,7 +1,9 @@
 import React, { useState, useRef, useEffect } from 'react';
 import { motion, useSpring } from 'framer-motion';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const LiquidImage = ({ src, alt, style = {}, className = "" }) => {
+  const isMobile = useIsMobile();
   const [isHovered, setIsHovered] = useState(false);
   const filterId = useRef(`liquid-filter-${Math.random().toString(36).substr(2, 9)}`).current;
   const filterRef = useRef(null);
@@ -41,23 +43,25 @@ const LiquidImage = ({ src, alt, style = {}, className = "" }) => {
     <div 
       className={className} 
       style={{ ...style, position: 'relative', overflow: 'hidden' }}
-      onMouseMove={handleMouseMove}
-      onMouseEnter={handleMouseEnter}
-      onMouseLeave={handleMouseLeave}
+      onMouseMove={isMobile ? undefined : handleMouseMove}
+      onMouseEnter={isMobile ? undefined : handleMouseEnter}
+      onMouseLeave={isMobile ? undefined : handleMouseLeave}
     >
-      <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
-        <filter id={filterId}>
-          <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
-          <feDisplacementMap 
-            ref={filterRef}
-            in="SourceGraphic" 
-            in2="noise" 
-            scale="0" 
-            xChannelSelector="R" 
-            yChannelSelector="G" 
-          />
-        </filter>
-      </svg>
+      {!isMobile && (
+        <svg style={{ position: 'absolute', width: 0, height: 0 }} aria-hidden="true">
+          <filter id={filterId}>
+            <feTurbulence type="fractalNoise" baseFrequency="0.03" numOctaves="3" result="noise" />
+            <feDisplacementMap 
+              ref={filterRef}
+              in="SourceGraphic" 
+              in2="noise" 
+              scale="0" 
+              xChannelSelector="R" 
+              yChannelSelector="G" 
+            />
+          </filter>
+        </svg>
+      )}
       
       <motion.img 
         src={src} 
@@ -66,8 +70,8 @@ const LiquidImage = ({ src, alt, style = {}, className = "" }) => {
           width: '100%', 
           height: '100%', 
           objectFit: 'cover',
-          filter: `url(#${filterId})`,
-          transform: 'scale(1.1)', // Prevent edges from tearing
+          filter: isMobile ? 'none' : `url(#${filterId})`,
+          transform: isMobile ? 'scale(1)' : 'scale(1.1)', // Prevent edges from tearing only if using filter
           ...style
         }} 
       />

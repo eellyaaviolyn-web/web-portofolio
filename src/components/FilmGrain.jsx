@@ -1,6 +1,11 @@
 import React from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const FilmGrain = () => {
+  const isMobile = useIsMobile();
+  
+  if (isMobile) return null;
+
   return (
     <>
       <svg style={{ position: 'absolute', width: 0, height: 0, overflow: 'hidden' }}>

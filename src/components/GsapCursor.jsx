@@ -1,15 +1,19 @@
 import React, { useRef, useEffect, useState } from 'react';
 import gsap from 'gsap';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const TRAIL_COUNT = 5;
 
 const GsapCursor = () => {
+  const isMobile = useIsMobile();
   const cursorRef = useRef(null);
   const dotRef = useRef(null);
   const trailsRef = useRef([]);
   const [isHovering, setIsHovering] = useState(false);
 
   useEffect(() => {
+    if (isMobile) return;
+
     // Main cursor & dot quick setters
     const xToCursor = gsap.quickTo(cursorRef.current, "x", { duration: 0.4, ease: "power3" });
     const yToCursor = gsap.quickTo(cursorRef.current, "y", { duration: 0.4, ease: "power3" });
@@ -60,9 +64,9 @@ const GsapCursor = () => {
       window.removeEventListener('mousemove', onMouseMove);
       document.removeEventListener('mouseover', onMouseOver);
     };
-  }, []);
+  }, [isMobile]);
 
-  if (typeof window !== 'undefined' && window.matchMedia('(pointer: coarse)').matches) {
+  if (isMobile) {
     return null;
   }
 

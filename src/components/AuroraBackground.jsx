@@ -1,6 +1,9 @@
 import React from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const AuroraBackground = () => {
+  const isMobile = useIsMobile();
+  
   return (
     <div
       style={{
@@ -15,9 +18,13 @@ const AuroraBackground = () => {
         background: 'var(--bg-primary)',
       }}
     >
-      <div className="aurora-blob blob-1"></div>
-      <div className="aurora-blob blob-2"></div>
-      <div className="aurora-blob blob-3"></div>
+      {!isMobile && (
+        <>
+          <div className="aurora-blob blob-1"></div>
+          <div className="aurora-blob blob-2"></div>
+          <div className="aurora-blob blob-3"></div>
+        </>
+      )}
 
       <style>
         {`

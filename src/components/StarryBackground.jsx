@@ -1,7 +1,9 @@
 import React, { useEffect, useRef } from 'react';
+import { useIsMobile } from '../hooks/useIsMobile';
 
 const StarryBackground = () => {
   const canvasRef = useRef(null);
+  const isMobile = useIsMobile();
 
   useEffect(() => {
     const canvas = canvasRef.current;
@@ -36,8 +38,9 @@ const StarryBackground = () => {
 
     const initStars = () => {
       stars = [];
-      // Calculate a reasonable number of stars based on screen size
-      const numStars = Math.floor((canvas.width * canvas.height) / 2000); 
+      // Drastically reduce stars on mobile for performance
+      const density = isMobile ? 8000 : 2000;
+      const numStars = Math.floor((canvas.width * canvas.height) / density); 
       for (let i = 0; i < numStars; i++) {
         stars.push({
           x: Math.random() * canvas.width,
