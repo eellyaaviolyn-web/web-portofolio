@@ -1,10 +1,10 @@
-const { Client } = require('@notionhq/client');
+import { Client } from '@notionhq/client';
 
 // Initialize Notion client
 const notion = new Client({ auth: process.env.NOTION_API_KEY });
 const databaseId = process.env.NOTION_DATABASE_ID;
 
-module.exports = async (req, res) => {
+export default async function handler(req, res) {
   // CORS configuration for local development / external access
   res.setHeader('Access-Control-Allow-Credentials', true);
   res.setHeader('Access-Control-Allow-Origin', '*');
