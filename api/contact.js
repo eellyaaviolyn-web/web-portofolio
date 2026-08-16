@@ -36,7 +36,10 @@ export default async function handler(req, res) {
       console.error("Missing keys. Available env keys:", Object.keys(process.env).join(', '));
       return res.status(500).json({ 
         message: 'Server configuration error. Missing Notion keys.',
-        debug_env_keys: Object.keys(process.env).filter(k => k.includes('NOTION'))
+        debug_lengths: {
+          key: process.env.NOTION_API_KEY?.length,
+          db: process.env.NOTION_DATABASE_ID?.length
+        }
       });
     }
 
