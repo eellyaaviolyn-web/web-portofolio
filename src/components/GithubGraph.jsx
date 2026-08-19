@@ -11,9 +11,32 @@ const GithubGraph = () => {
       overflowX: 'auto',
       boxShadow: 'var(--shadow-md)'
     }}>
-      <h3 style={{ marginBottom: '1rem', fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)' }}>
-        Coding Activity
-      </h3>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', marginBottom: '1.5rem' }}>
+        <h3 style={{ fontSize: '1.1rem', fontWeight: 600, color: 'var(--text-primary)', margin: 0 }}>
+          Coding Activity
+        </h3>
+        <a 
+          href="https://github.com/eellyaaviolyn-web" 
+          target="_blank" 
+          rel="noopener noreferrer"
+          style={{
+            fontSize: '0.9rem',
+            color: 'var(--accent-primary)',
+            textDecoration: 'none',
+            display: 'flex',
+            alignItems: 'center',
+            gap: '0.5rem',
+            background: 'rgba(59, 130, 246, 0.1)',
+            padding: '0.4rem 0.8rem',
+            borderRadius: '2rem',
+            transition: 'all 0.3s ease'
+          }}
+          onMouseOver={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.2)'}
+          onMouseOut={(e) => e.currentTarget.style.background = 'rgba(59, 130, 246, 0.1)'}
+        >
+          @eellyaaviolyn-web
+        </a>
+      </div>
       
       <div style={{ minWidth: '700px' }}>
         <GitHubCalendar 
