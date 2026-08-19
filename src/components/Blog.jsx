@@ -2,36 +2,20 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { LanguageContext } from '../context/LanguageContext';
 import GsapReveal from './GsapReveal';
+import { supabase } from '../lib/supabase';
 
 const Blog = () => {
   const { t } = useContext(LanguageContext);
   const [blogs, setBlogs] = useState([]);
 
   useEffect(() => {
-    const savedBlogs = localStorage.getItem('portfolio_blogs');
-    if (savedBlogs) {
-      setBlogs(JSON.parse(savedBlogs));
-    } else {
-      // Default sample blogs
-      const sampleBlogs = [
-        {
-          id: 1,
-          title: 'Memahami React Hooks',
-          date: '12 Mei 2026',
-          excerpt: 'React Hooks mengubah cara kita menulis komponen fungsional dengan state dan efek samping.',
-          link: '#'
-        },
-        {
-          id: 2,
-          title: 'Styling Modern dengan Tailwind CSS',
-          date: '05 April 2026',
-          excerpt: 'Mengapa utility-first CSS framework seperti Tailwind sangat populer di kalangan developer frontend.',
-          link: '#'
-        }
-      ];
-      setBlogs(sampleBlogs);
-      localStorage.setItem('portfolio_blogs', JSON.stringify(sampleBlogs));
-    }
+    const fetchBlogs = async () => {
+      const { data } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
+      if (data) {
+        setBlogs(data);
+      }
+    };
+    fetchBlogs();
   }, []);
 
   if (blogs.length === 0) return null;
