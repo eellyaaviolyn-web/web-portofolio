@@ -15,9 +15,9 @@ const AdminDashboard = () => {
 
   const [blogs, setBlogs] = useState([]);
   const [editingBlog, setEditingBlog] = useState(null);
-  const [editBlogForm, setEditBlogForm] = useState({ title: '', date: '', excerpt: '', link: '' });
+  const [editBlogForm, setEditBlogForm] = useState({ title: '', date: '', excerpt: '', link: '', image: '' });
   const [isAddingBlog, setIsAddingBlog] = useState(false);
-  const [addBlogForm, setAddBlogForm] = useState({ title: '', date: '', excerpt: '', link: '' });
+  const [addBlogForm, setAddBlogForm] = useState({ title: '', date: '', excerpt: '', link: '', image: '' });
   
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -43,13 +43,28 @@ const AdminDashboard = () => {
     const file = e.target.files[0];
     if (!file) return;
 
+    // Validasi tipe file
+    const allowedTypes = ['image/jpeg', 'image/png', 'image/webp', 'image/gif'];
+    if (!allowedTypes.includes(file.type)) {
+      alert('Tipe file tidak didukung. Gunakan JPG, PNG, WebP, atau GIF.');
+      e.target.value = '';
+      return;
+    }
+
+    // Validasi ukuran file (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      alert('Ukuran file terlalu besar. Maksimal 5MB.');
+      e.target.value = '';
+      return;
+    }
+
     setUploadingImage(true);
     const fileExt = file.name.split('.').pop();
-    const fileName = `${Date.now()}.${fileExt}`;
+    const fileName = `${Date.now()}-${Math.random().toString(36).substr(2, 9)}.${fileExt}`;
 
     const { error: uploadError } = await supabase.storage
       .from('portfolio_images')
-      .upload(fileName, file);
+      .upload(fileName, file, { cacheControl: '3600', upsert: false });
 
     if (uploadError) {
       alert('Gagal upload gambar. Error: ' + uploadError.message);
@@ -249,7 +264,7 @@ const AdminDashboard = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.5rem' }}>Blog Articles</h3>
-              <button className="btn btn-primary" onClick={() => { setIsAddingBlog(true); setAddBlogForm({ title: '', date: '', excerpt: '', link: '' }); }} disabled={isAddingBlog}>+ Add Article</button>
+              <button className="btn btn-primary" onClick={() => { setIsAddingBlog(true); setAddBlogForm({ title: '', date: '', excerpt: '', link: '', image: '' }); }} disabled={isAddingBlog}>+ Add Article</button>
             </div>
 
             <div style={{ display: 'grid', gap: '1.5rem' }}>
@@ -262,9 +277,18 @@ const AdminDashboard = () => {
                       <input type="text" className="input-field" value={addBlogForm.date} onChange={(e) => setAddBlogForm({...addBlogForm, date: e.target.value})} placeholder="Date (e.g. 12 Mei 2026) - leave blank for today" />
                       <textarea className="input-field" value={addBlogForm.excerpt} onChange={(e) => setAddBlogForm({...addBlogForm, excerpt: e.target.value})} placeholder="Short excerpt/description" rows="3" />
                       <input type="text" className="input-field" value={addBlogForm.link} onChange={(e) => setAddBlogForm({...addBlogForm, link: e.target.value})} placeholder="Link to full article (Optional)" />
+                      <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                        <label style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Upload Thumbnail (Optional)</label>
+                        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                          <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setAddBlogForm, addBlogForm)} className="input-field" style={{ padding: '0.5rem', flex: 1 }} />
+                          {addBlogForm.image && <img src={addBlogForm.image} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.5rem' }} />}
+                        </div>
+                      </div>
                       <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end', marginTop: '1rem' }}>
                         <button className="btn btn-outline" onClick={() => setIsAddingBlog(false)}>Cancel</button>
-                        <button className="btn btn-primary" onClick={saveNewBlog}>Save Article</button>
+                        <button className="btn btn-primary" onClick={saveNewBlog} disabled={uploadingImage}>
+                          {uploadingImage ? 'Uploading...' : 'Save Article'}
+                        </button>
                       </div>
                     </div>
                   </motion.div>
@@ -278,20 +302,32 @@ const AdminDashboard = () => {
                         <input type="text" className="input-field" value={editBlogForm.date} onChange={(e) => setEditBlogForm({...editBlogForm, date: e.target.value})} placeholder="Date" />
                         <textarea className="input-field" value={editBlogForm.excerpt} onChange={(e) => setEditBlogForm({...editBlogForm, excerpt: e.target.value})} placeholder="Short excerpt/description" rows="3" />
                         <input type="text" className="input-field" value={editBlogForm.link} onChange={(e) => setEditBlogForm({...editBlogForm, link: e.target.value})} placeholder="Link to full article" />
+                        <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
+                          <label style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Upload Thumbnail (Optional)</label>
+                          <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                            <input type="file" accept="image/*" onChange={(e) => handleImageUpload(e, setEditBlogForm, editBlogForm)} className="input-field" style={{ padding: '0.5rem', flex: 1 }} />
+                            {editBlogForm.image && <img src={editBlogForm.image} alt="Preview" style={{ width: '60px', height: '60px', objectFit: 'cover', borderRadius: '0.5rem' }} />}
+                          </div>
+                        </div>
                         <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
                           <button className="btn btn-outline" onClick={() => setEditingBlog(null)}>Cancel</button>
-                          <button className="btn btn-primary" onClick={() => saveEditBlog(blog.id)}>Save Changes</button>
+                          <button className="btn btn-primary" onClick={() => saveEditBlog(blog.id)} disabled={uploadingImage}>
+                            {uploadingImage ? 'Uploading...' : 'Save Changes'}
+                          </button>
                         </div>
                       </div>
                     ) : (
                       <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', flexWrap: 'wrap', gap: '1.5rem' }}>
-                        <div style={{ flex: '1' }}>
-                          <p style={{ color: 'var(--accent-primary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.3rem' }}>{blog.date}</p>
-                          <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{blog.title}</h3>
-                          <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>{blog.excerpt}</p>
+                        <div style={{ display: 'flex', gap: '1rem', alignItems: 'center', flex: '1' }}>
+                          {blog.image && <img src={blog.image} alt={blog.title} style={{ width: '70px', height: '50px', objectFit: 'cover', borderRadius: '0.5rem', flexShrink: 0 }} />}
+                          <div>
+                            <p style={{ color: 'var(--accent-primary)', fontSize: '0.85rem', fontWeight: 600, marginBottom: '0.3rem' }}>{blog.date}</p>
+                            <h3 style={{ fontSize: '1.25rem', fontWeight: 600 }}>{blog.title}</h3>
+                            <p style={{ fontSize: '0.95rem', color: 'var(--text-secondary)' }}>{blog.excerpt}</p>
+                          </div>
                         </div>
                         <div style={{ display: 'flex', gap: '0.75rem' }}>
-                          <button className="btn btn-outline" onClick={() => { setEditingBlog(blog.id); setEditBlogForm(blog); }}>Edit</button>
+                          <button className="btn btn-outline" onClick={() => { setEditingBlog(blog.id); setEditBlogForm({...blog, image: blog.image || ''}); }}>Edit</button>
                           <button className="btn" style={{ background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', border: '1px solid #ef4444' }} onClick={() => handleDeleteBlog(blog.id)}>Delete</button>
                         </div>
                       </div>

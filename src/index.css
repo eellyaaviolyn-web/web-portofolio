@@ -452,6 +452,36 @@ ul {
   .heading-xl {
     font-size: clamp(2rem, 8vw, 3rem);
   }
+  /* Hero: stack foto di bawah teks di HP */
+  #home {
+    flex-direction: column !important;
+    text-align: center !important;
+    padding-top: 6rem !important;
+  }
+  #home > div:first-of-type {
+    text-align: center !important;
+  }
+  /* Tombol Hero centered */
+  #home .btn {
+    justify-content: center;
+  }
+  /* Blog grid 1 kolom */
+  #blog > div:last-child {
+    grid-template-columns: 1fr !important;
+  }
+}
+
+/* Tablet breakpoint */
+@media (max-width: 600px) {
+  .section {
+    padding: 4rem 1.25rem;
+  }
+  .container {
+    padding: 0 1.25rem;
+  }
+  .heading-lg {
+    font-size: clamp(1.75rem, 6vw, 2.5rem);
+  }
 }
 
 /* Hide Custom Cursor on Touch Devices (Mobile/Tablet) */
