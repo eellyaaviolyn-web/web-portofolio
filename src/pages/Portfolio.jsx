@@ -10,6 +10,7 @@ import Services from '../components/Services';
 import Projects from '../components/Projects';
 import Education from '../components/Education';
 import Blog from '../components/Blog';
+import Testimonials from '../components/Testimonials';
 import Contact from '../components/Contact';
 
 const Portfolio = ({ theme, toggleTheme }) => {
@@ -46,6 +47,7 @@ const Portfolio = ({ theme, toggleTheme }) => {
         <Projects />
         <Education />
         <Blog />
+        <Testimonials />
         <Contact />
       </main>
       <MacDock />

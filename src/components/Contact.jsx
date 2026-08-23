@@ -3,17 +3,15 @@ import { motion } from 'framer-motion';
 import { FaPhoneAlt, FaWhatsapp, FaGithub, FaInstagram, FaYoutube } from 'react-icons/fa';
 import { LanguageContext } from '../context/LanguageContext';
 import GsapReveal from './GsapReveal';
+import { toast } from './Toast';
 
 const Contact = () => {
   const { t } = useContext(LanguageContext);
-  const [formStatus, setFormStatus] = useState('');
-
   const [isSubmitting, setIsSubmitting] = useState(false);
 
   const handleSubmit = async (e) => {
     e.preventDefault();
     setIsSubmitting(true);
-    setFormStatus('');
 
     const formData = new FormData(e.target);
     const data = {
@@ -25,24 +23,18 @@ const Contact = () => {
     try {
       const response = await fetch('/api/contact', {
         method: 'POST',
-        headers: {
-          'Content-Type': 'application/json',
-        },
+        headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify(data),
       });
 
-      const result = await response.json();
-
       if (response.ok) {
-        setFormStatus('success');
+        toast.success('Pesan berhasil terkirim! Saya akan segera menghubungi Anda. 🎉');
         e.target.reset();
       } else {
-        setFormStatus('error');
-        console.error('Submission error:', result);
+        toast.error('Gagal mengirim pesan. Coba lagi nanti atau hubungi via WhatsApp.');
       }
     } catch (error) {
-      setFormStatus('error');
-      console.error('Network error:', error);
+      toast.error('Koneksi gagal. Pastikan internet Anda stabil.');
     } finally {
       setIsSubmitting(false);
     }
@@ -71,20 +63,7 @@ const Contact = () => {
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(300px, 1fr))', gap: '4rem', marginBottom: '4rem' }}>
         {/* Contact Form */}
         <GsapReveal>
-          <div
-            className="card glass"
-            style={{ padding: '2.5rem' }}
-          >
-            {formStatus === 'success' && (
-              <div style={{ padding: '1rem', marginBottom: '1rem', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', borderRadius: '0.5rem', border: '1px solid rgba(16, 185, 129, 0.2)' }}>
-                {t.contact.success || 'Pesan Anda berhasil terkirim! Terima kasih telah menghubungi saya.'}
-              </div>
-            )}
-            {formStatus === 'error' && (
-              <div style={{ padding: '1rem', marginBottom: '1rem', background: 'rgba(239, 68, 68, 0.1)', color: '#ef4444', borderRadius: '0.5rem', border: '1px solid rgba(239, 68, 68, 0.2)' }}>
-                {t.contact.error || 'Terjadi kesalahan saat mengirim pesan. Coba lagi nanti.'}
-              </div>
-            )}
+          <div className="card glass" style={{ padding: '2.5rem' }}>
             <form onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
               <div>
                 <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 500 }}>{t.contact.formName}</label>

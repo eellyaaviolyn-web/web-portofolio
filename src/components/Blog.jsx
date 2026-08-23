@@ -2,23 +2,25 @@ import React, { useState, useEffect, useContext } from 'react';
 import { motion } from 'framer-motion';
 import { LanguageContext } from '../context/LanguageContext';
 import GsapReveal from './GsapReveal';
+import { BlogSkeleton } from './Skeleton';
 import { supabase } from '../lib/supabase';
 
 const Blog = () => {
   const { t } = useContext(LanguageContext);
   const [blogs, setBlogs] = useState([]);
+  const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     const fetchBlogs = async () => {
+      setIsLoading(true);
       const { data } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
-      if (data) {
-        setBlogs(data);
-      }
+      if (data) setBlogs(data);
+      setIsLoading(false);
     };
     fetchBlogs();
   }, []);
 
-  if (blogs.length === 0) return null;
+  if (!isLoading && blogs.length === 0) return null;
 
   return (
     <section id="blog" className="section container">
@@ -34,7 +36,9 @@ const Blog = () => {
       </GsapReveal>
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
-        {blogs.map((blog, index) => (
+        {isLoading
+          ? [1, 2, 3].map(i => <BlogSkeleton key={i} />)
+          : blogs.map((blog, index) => (
           <GsapReveal key={blog.id} direction="up" distance={50} delay={index * 0.1}>
             <motion.article
               className="card glass"

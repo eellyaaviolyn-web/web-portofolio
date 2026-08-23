@@ -4,12 +4,14 @@ import { AnimatePresence } from 'framer-motion';
 import Portfolio from './pages/Portfolio';
 import Login from './pages/Login';
 import AdminDashboard from './pages/AdminDashboard';
+import NotFound from './pages/NotFound';
 import { LanguageProvider } from './context/LanguageContext';
 import GsapCursor from './components/GsapCursor';
 import AuroraBackground from './components/AuroraBackground';
 import FilmGrain from './components/FilmGrain';
 import AudioReactor from './components/AudioReactor';
 import Preloader from './components/Preloader';
+import { ToastContainer } from './components/Toast';
 import { playHoverSound, playClickSound } from './utils/sound';
 
 // Mock Auth Check
@@ -19,11 +21,13 @@ const ProtectedRoute = ({ children }) => {
 };
 
 function App() {
-  const [theme, setTheme] = useState('dark');
+  // Persist theme preference in localStorage
+  const [theme, setTheme] = useState(() => localStorage.getItem('theme') || 'dark');
   const [isLoading, setIsLoading] = useState(true);
 
   useEffect(() => {
     document.documentElement.setAttribute('data-theme', theme);
+    localStorage.setItem('theme', theme);
   }, [theme]);
 
   // Global Audio Engine (Tactile Feedback)
@@ -63,6 +67,9 @@ function App() {
           <feBlend in="SourceGraphic" in2="goo" />
         </filter>
       </svg>
+
+      {/* Global Toast Notifications */}
+      <ToastContainer />
       
       <AnimatePresence mode="wait">
         {isLoading && <Preloader key="preloader" onComplete={() => setIsLoading(false)} />}
@@ -86,6 +93,8 @@ function App() {
                   </ProtectedRoute>
                 } 
               />
+              {/* Custom 404 Page */}
+              <Route path="*" element={<NotFound />} />
             </Routes>
           </Router>
         </>

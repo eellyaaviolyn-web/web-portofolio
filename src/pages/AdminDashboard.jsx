@@ -9,15 +9,19 @@ const AdminDashboard = () => {
   
   const [projects, setProjects] = useState([]);
   const [editingProject, setEditingProject] = useState(null);
-  const [editForm, setEditForm] = useState({ title: '', description: '', link: '', image: '' });
+  const [editForm, setEditForm] = useState({ title: '', description: '', link: '', github_link: '', image: '', tags: '' });
   const [isAdding, setIsAdding] = useState(false);
-  const [addForm, setAddForm] = useState({ title: '', description: '', link: '', image: '' });
+  const [addForm, setAddForm] = useState({ title: '', description: '', link: '', github_link: '', image: '', tags: '' });
 
   const [blogs, setBlogs] = useState([]);
   const [editingBlog, setEditingBlog] = useState(null);
   const [editBlogForm, setEditBlogForm] = useState({ title: '', date: '', excerpt: '', link: '', image: '' });
   const [isAddingBlog, setIsAddingBlog] = useState(false);
   const [addBlogForm, setAddBlogForm] = useState({ title: '', date: '', excerpt: '', link: '', image: '' });
+
+  const [testimonials, setTestimonials] = useState([]);
+  const [isAddingTestimonial, setIsAddingTestimonial] = useState(false);
+  const [addTestimonialForm, setAddTestimonialForm] = useState({ name: '', role: '', content: '', rating: 5, avatar: '' });
   
   const [uploadingImage, setUploadingImage] = useState(false);
 
@@ -29,6 +33,9 @@ const AdminDashboard = () => {
       
       const { data: bData } = await supabase.from('blogs').select('*').order('created_at', { ascending: false });
       if (bData) setBlogs(bData);
+
+      const { data: tData } = await supabase.from('testimonials').select('*').order('created_at', { ascending: false });
+      if (tData) setTestimonials(tData);
     };
     fetchData();
   }, []);
@@ -36,6 +43,22 @@ const AdminDashboard = () => {
   const handleLogout = () => {
     localStorage.removeItem('isAdminLoggedIn');
     navigate('/');
+  };
+
+  // Testimonials Handlers
+  const saveNewTestimonial = async () => {
+    const { data, error } = await supabase.from('testimonials').insert([addTestimonialForm]).select();
+    if (data) {
+      setTestimonials([data[0], ...testimonials]);
+      setIsAddingTestimonial(false);
+      setAddTestimonialForm({ name: '', role: '', content: '', rating: 5, avatar: '' });
+    } else {
+      alert('Error: ' + error?.message);
+    }
+  };
+  const handleDeleteTestimonial = async (id) => {
+    await supabase.from('testimonials').delete().eq('id', id);
+    setTestimonials(testimonials.filter(t => t.id !== id));
   };
 
   // Image Upload to Supabase
@@ -80,7 +103,11 @@ const AdminDashboard = () => {
   // Projects Handlers
   const saveNewProject = async () => {
     const newProject = { ...addForm };
-    if(!newProject.image) newProject.image = 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80';
+    if (!newProject.image) newProject.image = 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80';
+    // Parse tags string to array
+    if (typeof newProject.tags === 'string') {
+      newProject.tags = newProject.tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
     
     const { data, error } = await supabase.from('projects').insert([newProject]).select();
     if (data) {
@@ -95,7 +122,11 @@ const AdminDashboard = () => {
     setProjects(projects.filter(p => p.id !== id));
   };
   const saveEditProject = async (id) => {
-    const { data, error } = await supabase.from('projects').update(editForm).eq('id', id).select();
+    const toSave = { ...editForm };
+    if (typeof toSave.tags === 'string') {
+      toSave.tags = toSave.tags.split(',').map(t => t.trim()).filter(Boolean);
+    }
+    const { data, error } = await supabase.from('projects').update(toSave).eq('id', id).select();
     if (data) {
       setProjects(projects.map(p => p.id === id ? data[0] : p));
       setEditingProject(null);
@@ -180,6 +211,13 @@ const AdminDashboard = () => {
           >
             Manage Blog Articles
           </button>
+          <button 
+            className={`btn ${activeTab === 'testimonials' ? 'btn-primary' : 'glass'}`} 
+            onClick={() => setActiveTab('testimonials')}
+            style={{ padding: '0.5rem 1.5rem', borderRadius: '50px' }}
+          >
+            💬 Testimonials
+          </button>
         </div>
 
         {/* ----------------- PROJECTS TAB ----------------- */}
@@ -187,7 +225,7 @@ const AdminDashboard = () => {
           <div>
             <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
               <h3 style={{ fontSize: '1.5rem' }}>Projects</h3>
-              <button className="btn btn-primary" onClick={() => { setIsAdding(true); setAddForm({ title: '', description: '', link: '', image: '' }); }} disabled={isAdding}>+ Add Project</button>
+              <button className="btn btn-primary" onClick={() => { setIsAdding(true); setAddForm({ title: '', description: '', link: '', github_link: '', image: '', tags: '' }); }} disabled={isAdding}>+ Add Project</button>
             </div>
 
             <div style={{ display: 'grid', gap: '1.5rem' }}>
@@ -198,7 +236,9 @@ const AdminDashboard = () => {
                     <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                       <input type="text" className="input-field" value={addForm.title} onChange={(e) => setAddForm({...addForm, title: e.target.value})} placeholder="Project Title" />
                       <textarea className="input-field" value={addForm.description} onChange={(e) => setAddForm({...addForm, description: e.target.value})} placeholder="Project Description" rows="2" />
-                      <input type="text" className="input-field" value={addForm.link} onChange={(e) => setAddForm({...addForm, link: e.target.value})} placeholder="Project Link (Optional)" />
+                      <input type="text" className="input-field" value={addForm.link} onChange={(e) => setAddForm({...addForm, link: e.target.value})} placeholder="🌐 Live Demo Link (Optional)" />
+                      <input type="text" className="input-field" value={addForm.github_link} onChange={(e) => setAddForm({...addForm, github_link: e.target.value})} placeholder="📂 GitHub Repository Link (Optional)" />
+                      <input type="text" className="input-field" value={addForm.tags} onChange={(e) => setAddForm({...addForm, tags: e.target.value})} placeholder="🏷️ Tags (pisah koma: React.js, Supabase, Tailwind CSS)" />
                       <div style={{ display: 'flex', flexDirection: 'column', gap: '0.5rem' }}>
                         <label style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Upload Image</label>
                         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
@@ -332,6 +372,63 @@ const AdminDashboard = () => {
                         </div>
                       </div>
                     )}
+                  </motion.div>
+                ))}{' '}
+              </AnimatePresence>
+            </div>
+          </div>
+        )}
+
+        {/* ----------------- TESTIMONIALS TAB ----------------- */}
+        {activeTab === 'testimonials' && (
+          <div>
+            <div style={{ display: 'flex', justifyContent: 'space-between', marginBottom: '1.5rem' }}>
+              <h3 style={{ fontSize: '1.5rem' }}>💬 Testimonials</h3>
+              <button className="btn btn-primary" onClick={() => setIsAddingTestimonial(true)} disabled={isAddingTestimonial}>+ Add Testimonial</button>
+            </div>
+
+            <div style={{ display: 'grid', gap: '1.5rem' }}>
+              <AnimatePresence>
+                {isAddingTestimonial && (
+                  <motion.div initial={{ opacity: 0, height: 0 }} animate={{ opacity: 1, height: 'auto' }} exit={{ opacity: 0, height: 0 }} className="card" style={{ border: '2px solid var(--accent-primary)', padding: '1.5rem 2rem' }}>
+                    <h3 style={{ marginBottom: '1rem', color: 'var(--accent-primary)' }}>New Testimonial</h3>
+                    <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
+                      <input type="text" className="input-field" value={addTestimonialForm.name} onChange={(e) => setAddTestimonialForm({...addTestimonialForm, name: e.target.value})} placeholder="Nama (contoh: Andi Pratama)" />
+                      <input type="text" className="input-field" value={addTestimonialForm.role} onChange={(e) => setAddTestimonialForm({...addTestimonialForm, role: e.target.value})} placeholder="Jabatan/Relasi (contoh: Teman Sekelas)" />
+                      <input type="text" className="input-field" value={addTestimonialForm.avatar} onChange={(e) => setAddTestimonialForm({...addTestimonialForm, avatar: e.target.value})} placeholder="Inisial Avatar (2 huruf, contoh: AP) atau URL foto" />
+                      <textarea className="input-field" value={addTestimonialForm.content} onChange={(e) => setAddTestimonialForm({...addTestimonialForm, content: e.target.value})} placeholder="Isi ulasan/testimonial..." rows="3" />
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+                        <label style={{ fontSize: '0.9rem', color: 'var(--text-secondary)' }}>Rating:</label>
+                        {[1,2,3,4,5].map(s => (
+                          <button key={s} onClick={() => setAddTestimonialForm({...addTestimonialForm, rating: s})} style={{ background: 'none', border: 'none', cursor: 'pointer', fontSize: '1.5rem', color: s <= addTestimonialForm.rating ? '#f59e0b' : 'var(--border-color)' }}>★</button>
+                        ))}
+                      </div>
+                      <div style={{ display: 'flex', gap: '0.75rem', justifyContent: 'flex-end' }}>
+                        <button className="btn btn-outline" onClick={() => setIsAddingTestimonial(false)}>Cancel</button>
+                        <button className="btn btn-primary" onClick={saveNewTestimonial}>Save</button>
+                      </div>
+                    </div>
+                  </motion.div>
+                )}
+
+                {testimonials.length === 0 && !isAddingTestimonial && (
+                  <div style={{ textAlign: 'center', padding: '3rem', color: 'var(--text-secondary)', border: '2px dashed var(--border-color)', borderRadius: '1rem' }}>
+                    <p>Belum ada testimonial. Klik "+ Add Testimonial" untuk menambahkan.</p>
+                    <p style={{ fontSize: '0.85rem', marginTop: '0.5rem' }}>Testimonial default (sample) akan ditampilkan di website selama tidak ada data di sini.</p>
+                  </div>
+                )}
+
+                {testimonials.map(t => (
+                  <motion.div key={t.id} initial={{ opacity: 0 }} animate={{ opacity: 1 }} exit={{ opacity: 0 }} className="card" style={{ padding: '1.5rem 2rem', display: 'flex', justifyContent: 'space-between', alignItems: 'flex-start', gap: '1rem' }}>
+                    <div style={{ flex: 1 }}>
+                      <div style={{ display: 'flex', alignItems: 'center', gap: '0.5rem', marginBottom: '0.5rem' }}>
+                        <strong>{t.name}</strong>
+                        <span style={{ color: 'var(--text-secondary)', fontSize: '0.85rem' }}>— {t.role}</span>
+                        <span style={{ color: '#f59e0b' }}>{'★'.repeat(t.rating)}</span>
+                      </div>
+                      <p style={{ color: 'var(--text-secondary)', fontSize: '0.95rem' }}>{t.content}</p>
+                    </div>
+                    <button className="btn" onClick={() => handleDeleteTestimonial(t.id)} style={{ background: 'rgba(239,68,68,0.1)', color: '#ef4444', border: '1px solid #ef4444', flexShrink: 0 }}>Delete</button>
                   </motion.div>
                 ))}
               </AnimatePresence>
