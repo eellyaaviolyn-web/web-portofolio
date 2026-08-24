@@ -52,10 +52,7 @@ const Hero = () => {
         animate="visible"
         style={{ flex: '1', minWidth: '300px', textAlign: 'left', zIndex: 2 }}
       >
-        <motion.div variants={itemVariants} style={{ display: 'inline-flex', alignItems: 'center', gap: '0.5rem', background: 'var(--bg-secondary)', padding: '0.5rem 1rem', borderRadius: '50px', border: '1px solid var(--border-color)', marginBottom: '1.5rem', fontSize: '0.85rem', fontWeight: 500, color: 'var(--text-secondary)' }}>
-          <span style={{ display: 'block', width: '8px', height: '8px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 10px #10b981' }} className="pulse-dot"></span>
-          Available for Work & Internship
-        </motion.div>
+
 
         <motion.h2 variants={itemVariants} className="text-lead" style={{ color: 'var(--accent-primary)', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1rem' }}>
           {t.hero.greeting}{' '}
