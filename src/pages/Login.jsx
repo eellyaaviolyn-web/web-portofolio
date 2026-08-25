@@ -1,21 +1,32 @@
 import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
+import { supabase } from '../lib/supabase';
+import { toast } from '../components/Toast';
 
 const Login = () => {
-  const [username, setUsername] = useState("");
+  const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
+  const [isLoading, setIsLoading] = useState(false);
   const navigate = useNavigate();
 
-  const handleLogin = (e) => {
+  const handleLogin = async (e) => {
     e.preventDefault();
-    // Hardcoded credentials for testing
-    if (username === "admin" && password === "vinzkiesaja") {
-      localStorage.setItem("isAdminLoggedIn", "true");
+    setIsLoading(true);
+
+    const { data, error } = await supabase.auth.signInWithPassword({
+      email: email,
+      password: password,
+    });
+
+    if (error) {
+      toast.error(error.message || "Email atau password salah.");
+    } else if (data.session) {
+      toast.success("Login berhasil! Selamat datang, Admin.");
       navigate("/admin");
-    } else {
-      alert("Invalid credentials");
     }
+    
+    setIsLoading(false);
   };
 
   return (
@@ -68,13 +79,13 @@ const Login = () => {
         </h2>
         <form onSubmit={handleLogin}>
           <div className="input-group">
-            <label className="input-label">Username</label>
+            <label className="input-label">Email</label>
             <input
-              type="text"
+              type="email"
               className="input-field"
-              value={username}
-              onChange={(e) => setUsername(e.target.value)}
-              placeholder="Enter username"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
+              placeholder="Enter email"
               required
             />
           </div>
@@ -95,9 +106,10 @@ const Login = () => {
             whileTap={{ scale: 0.98 }}
             type="submit"
             className="btn btn-primary"
-            style={{ width: "100%", marginTop: "1.5rem", padding: "1rem" }}
+            disabled={isLoading}
+            style={{ width: "100%", marginTop: "1.5rem", padding: "1rem", opacity: isLoading ? 0.7 : 1 }}
           >
-            Login to Dashboard
+            {isLoading ? 'Logging in...' : 'Login to Dashboard'}
           </motion.button>
         </form>
 

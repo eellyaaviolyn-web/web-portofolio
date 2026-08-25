@@ -1,9 +1,8 @@
 import { BrowserRouter as Router, Routes, Route, Navigate } from 'react-router-dom';
-import { useState, useEffect } from 'react';
+import { useState, useEffect, Suspense, lazy } from 'react';
 import { AnimatePresence } from 'framer-motion';
 import Portfolio from './pages/Portfolio';
 import Login from './pages/Login';
-import AdminDashboard from './pages/AdminDashboard';
 import NotFound from './pages/NotFound';
 import { LanguageProvider } from './context/LanguageContext';
 import GsapCursor from './components/GsapCursor';
@@ -13,11 +12,34 @@ import AudioReactor from './components/AudioReactor';
 import Preloader from './components/Preloader';
 import { ToastContainer } from './components/Toast';
 import { playHoverSound, playClickSound } from './utils/sound';
+import { supabase } from './lib/supabase';
 
-// Mock Auth Check
+// Lazy load Admin Dashboard for performance
+const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
+
+// Supabase Auth Check
 const ProtectedRoute = ({ children }) => {
-  const isAuthenticated = localStorage.getItem('isAdminLoggedIn') === 'true';
-  return isAuthenticated ? children : <Navigate to="/login" replace />;
+  const [session, setSession] = useState(null);
+  const [loading, setLoading] = useState(true);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setLoading(false);
+    });
+
+    const {
+      data: { subscription },
+    } = supabase.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="pulse-dot" style={{ width: '20px', height: '20px', background: 'var(--accent-primary)' }}></div></div>;
+
+  return session ? children : <Navigate to="/login" replace />;
 };
 
 function App() {
@@ -89,7 +111,9 @@ function App() {
                 path="/admin" 
                 element={
                   <ProtectedRoute>
-                    <AdminDashboard />
+                    <Suspense fallback={<div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="pulse-dot" style={{ width: '20px', height: '20px', background: 'var(--accent-primary)' }}></div></div>}>
+                      <AdminDashboard />
+                    </Suspense>
                   </ProtectedRoute>
                 } 
               />

@@ -20,6 +20,21 @@ const Blog = () => {
     fetchBlogs();
   }, []);
 
+  const handleLike = async (id, currentLikes) => {
+    const newLikes = (currentLikes || 0) + 1;
+    setBlogs(blogs.map(b => b.id === id ? { ...b, likes: newLikes } : b));
+    await supabase.from('blogs').update({ likes: newLikes }).eq('id', id);
+  };
+
+  const handleView = async (blog) => {
+    if (blog.link && blog.link !== '#') {
+      window.open(blog.link, '_blank');
+      const newViews = (blog.views || 0) + 1;
+      setBlogs(blogs.map(b => b.id === blog.id ? { ...b, views: newViews } : b));
+      await supabase.from('blogs').update({ views: newViews }).eq('id', blog.id);
+    }
+  };
+
   if (!isLoading && blogs.length === 0) return null;
 
   return (
@@ -56,6 +71,16 @@ const Blog = () => {
                     onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}
                   />
                   <div style={{ position: 'absolute', inset: 0, background: 'linear-gradient(to bottom, transparent 50%, rgba(0,0,0,0.6) 100%)', pointerEvents: 'none' }} />
+                  
+                  {/* Likes & Views Badge */}
+                  <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', display: 'flex', gap: '0.5rem', zIndex: 3 }}>
+                    <button onClick={() => handleLike(blog.id, blog.likes)} style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.4rem 0.6rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
+                      <span style={{ color: '#ef4444' }}>💖</span> {blog.likes || 0}
+                    </button>
+                    <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.4rem 0.6rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem' }}>
+                      👁️ {blog.views || 0}
+                    </div>
+                  </div>
                 </div>
               ) : (
                 <div style={{ height: '100px', background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))', display: 'flex', alignItems: 'center', justifyContent: 'center', fontSize: '2.5rem', opacity: 0.7, flexShrink: 0 }}>
@@ -77,10 +102,8 @@ const Blog = () => {
                 </p>
 
                 {blog.link && blog.link !== '#' && (
-                  <motion.a
-                    href={blog.link}
-                    target="_blank"
-                    rel="noopener noreferrer"
+                  <motion.button
+                    onClick={() => handleView(blog)}
                     className="btn btn-outline"
                     whileHover={{ scale: 1.03 }}
                     whileTap={{ scale: 0.97 }}
@@ -88,7 +111,7 @@ const Blog = () => {
                   >
                     {t.blog.readMore}
                     <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5"><path d="M7 17L17 7M17 7H7M17 7V17" /></svg>
-                  </motion.a>
+                  </motion.button>
                 )}
               </div>
             </motion.article>

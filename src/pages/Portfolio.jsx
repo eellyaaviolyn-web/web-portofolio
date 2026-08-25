@@ -12,6 +12,7 @@ import Education from '../components/Education';
 import Blog from '../components/Blog';
 import Testimonials from '../components/Testimonials';
 import Contact from '../components/Contact';
+import SkillsMarquee from '../components/SkillsMarquee';
 
 const Portfolio = ({ theme, toggleTheme }) => {
   const { scrollYProgress } = useScroll();
@@ -39,11 +40,12 @@ const Portfolio = ({ theme, toggleTheme }) => {
         }}
       />
       <Navbar theme={theme} toggleTheme={toggleTheme} />
+      <CommandPalette theme={theme} toggleTheme={toggleTheme} />
       <main>
-        <CommandPalette theme={theme} toggleTheme={toggleTheme} />
         <Hero />
         <About />
         <Services />
+        <SkillsMarquee />
         <Projects />
         <Education />
         <Blog />
