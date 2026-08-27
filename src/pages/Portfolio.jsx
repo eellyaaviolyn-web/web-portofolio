@@ -45,7 +45,6 @@ const Portfolio = ({ theme, toggleTheme }) => {
         <Hero />
         <About />
         <Services />
-        <SkillsMarquee />
         <Projects />
         <Education />
         <Blog />
