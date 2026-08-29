@@ -55,7 +55,10 @@ const SpotlightCard = ({ children, className = '', style = {}, variants, whileHo
         transition={{ duration: 0.4 }}
         style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', borderRadius: 'inherit' }}
       >
-        <BorderBeam duration={4} colorFrom="#8b5cf6" colorTo="#0ea5e9" borderRadius="1rem" />
+        {/* Primary beam — clockwise */}
+        <BorderBeam duration={3} colorFrom="#8b5cf6" colorTo="#0ea5e9" glowLength={120} />
+        {/* Secondary beam — counter-clockwise, slower */}
+        <BorderBeam duration={4.5} colorFrom="#0ea5e9" colorTo="#ec4899" glowLength={80} reverse={true} />
       </motion.div>
 
       {/* 🌈 Rainbow Holographic Iridescent Foil */}
