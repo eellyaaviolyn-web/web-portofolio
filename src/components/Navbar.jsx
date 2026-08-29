@@ -4,12 +4,14 @@ import { BsSun, BsMoon, BsGlobe, BsVolumeUp, BsVolumeMute, BsList, BsX } from 'r
 import { LanguageContext } from '../context/LanguageContext';
 import { toggleMute, getIsMuted, playClickSound } from '../utils/sound';
 import { toggleAmbientSoundscape } from '../utils/generativeAudio';
+import useOnlineCount from '../hooks/useOnlineCount';
 
 const Navbar = ({ theme, toggleTheme }) => {
   const [isScrolled, setIsScrolled] = useState(false);
   const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
   const { language, toggleLanguage, t } = useContext(LanguageContext);
   const [isMuted, setIsMuted] = useState(getIsMuted());
+  const onlineCount = useOnlineCount();
 
   const handleToggleMute = () => {
     const newState = toggleMute();
@@ -56,17 +58,59 @@ const Navbar = ({ theme, toggleTheme }) => {
       }}
     >
       <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
-        <a 
-          href="#home" 
-          onClick={(e) => {
-            e.preventDefault();
-            document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth' });
-          }}
-          className="heading-lg" 
-          style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800, background: 'none', color: 'var(--text-primary)', WebkitTextFillColor: 'initial', display: 'flex', alignItems: 'center' }}
-        >
-          Portfolio<span style={{ color: 'var(--accent-primary)', fontSize: '2rem', lineHeight: 0 }}>.</span>
-        </a>
+        <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
+          <a 
+            href="#home" 
+            onClick={(e) => {
+              e.preventDefault();
+              document.querySelector('#home')?.scrollIntoView({ behavior: 'smooth' });
+            }}
+            className="heading-lg" 
+            style={{ margin: 0, fontSize: '1.6rem', fontWeight: 800, background: 'none', color: 'var(--text-primary)', WebkitTextFillColor: 'initial', display: 'flex', alignItems: 'center' }}
+          >
+            Portfolio<span style={{ color: 'var(--accent-primary)', fontSize: '2rem', lineHeight: 0 }}>.</span>
+          </a>
+
+          {/* Realtime Online Visitor Badge */}
+          <AnimatePresence mode="wait">
+            <motion.div
+              key={onlineCount}
+              initial={{ scale: 0.8, opacity: 0 }}
+              animate={{ scale: 1, opacity: 1 }}
+              exit={{ scale: 0.8, opacity: 0 }}
+              transition={{ type: 'spring', stiffness: 200, damping: 15 }}
+              style={{
+                display: 'flex',
+                alignItems: 'center',
+                gap: '0.4rem',
+                background: 'rgba(16, 185, 129, 0.1)',
+                border: '1px solid rgba(16, 185, 129, 0.3)',
+                borderRadius: '50px',
+                padding: '0.3rem 0.75rem',
+                fontSize: '0.78rem',
+                fontWeight: 600,
+                color: '#10b981',
+                whiteSpace: 'nowrap',
+              }}
+              title="Orang yang sedang melihat portofolio ini"
+            >
+              <motion.span
+                animate={{ scale: [1, 1.4, 1] }}
+                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
+                style={{
+                  display: 'block',
+                  width: '7px',
+                  height: '7px',
+                  borderRadius: '50%',
+                  background: '#10b981',
+                  boxShadow: '0 0 6px #10b981',
+                  flexShrink: 0,
+                }}
+              />
+              {onlineCount} online
+            </motion.div>
+          </AnimatePresence>
+        </div>
         
         <div className="desktop-nav" style={{ alignItems: 'center', gap: '2rem' }}>
           <div style={{ display: 'flex', gap: '0.5rem' }}>
