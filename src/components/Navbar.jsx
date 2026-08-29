@@ -94,19 +94,29 @@ const Navbar = ({ theme, toggleTheme }) => {
               }}
               title="Orang yang sedang melihat portofolio ini"
             >
-              <motion.span
-                animate={{ scale: [1, 1.4, 1] }}
-                transition={{ duration: 2, repeat: Infinity, ease: 'easeInOut' }}
-                style={{
-                  display: 'block',
-                  width: '7px',
-                  height: '7px',
-                  borderRadius: '50%',
-                  background: '#10b981',
-                  boxShadow: '0 0 6px #10b981',
-                  flexShrink: 0,
-                }}
-              />
+              {/* 📡 Sonar Radar Dot — 3 expanding rings */}
+              <span style={{ position: 'relative', display: 'inline-flex', alignItems: 'center', justifyContent: 'center', width: '14px', height: '14px', flexShrink: 0 }}>
+                {/* Ring 1 */}
+                <motion.span
+                  animate={{ scale: [0.4, 2.2], opacity: [0.7, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: 0 }}
+                  style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1.5px solid #10b981' }}
+                />
+                {/* Ring 2 */}
+                <motion.span
+                  animate={{ scale: [0.4, 2.2], opacity: [0.6, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: 0.6 }}
+                  style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1.5px solid #10b981' }}
+                />
+                {/* Ring 3 */}
+                <motion.span
+                  animate={{ scale: [0.4, 2.2], opacity: [0.4, 0] }}
+                  transition={{ duration: 2, repeat: Infinity, ease: 'easeOut', delay: 1.2 }}
+                  style={{ position: 'absolute', inset: 0, borderRadius: '50%', border: '1.5px solid #10b981' }}
+                />
+                {/* Core dot */}
+                <span style={{ position: 'relative', width: '7px', height: '7px', borderRadius: '50%', background: '#10b981', boxShadow: '0 0 8px #10b981, 0 0 16px rgba(16,185,129,0.4)', zIndex: 1 }} />
+              </span>
               {onlineCount} online
             </motion.div>
           </AnimatePresence>

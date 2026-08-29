@@ -4,6 +4,8 @@ import { LanguageContext } from '../context/LanguageContext';
 import GsapReveal from './GsapReveal';
 import { BlogSkeleton } from './Skeleton';
 import { supabase } from '../lib/supabase';
+import ParticleBurst from './ParticleBurst';
+import CinematicTitle from './CinematicTitle';
 
 const Blog = () => {
   const { t } = useContext(LanguageContext);
@@ -39,16 +41,25 @@ const Blog = () => {
 
   return (
     <section id="blog" className="section container">
-      <GsapReveal direction="up" distance={40} stagger={0.2} duration={1}>
-        <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
-          <h2 className="heading-lg">
-            {t.blog.title} <span className="gradient-text">{t.blog.subtitle}</span>
-          </h2>
-          <p className="text-lead" style={{ margin: '1rem auto 0', maxWidth: '600px' }}>
-            {t.blog.desc}
-          </p>
-        </div>
-      </GsapReveal>
+      <div style={{ marginBottom: '3rem', textAlign: 'center' }}>
+        <CinematicTitle
+          words={`${t.blog.title} ${t.blog.subtitle}`}
+          highlightWords={[t.blog.subtitle]}
+          className="heading-lg"
+          style={{ textAlign: 'center', justifyContent: 'center' }}
+        />
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="text-lead"
+          style={{ margin: '1rem auto 0', maxWidth: '600px' }}
+        >
+          {t.blog.desc}
+        </motion.p>
+      </div>
+
 
       <div style={{ display: 'grid', gridTemplateColumns: 'repeat(auto-fit, minmax(320px, 1fr))', gap: '2rem' }}>
         {isLoading
@@ -74,9 +85,11 @@ const Blog = () => {
                   
                   {/* Likes & Views Badge */}
                   <div style={{ position: 'absolute', top: '0.75rem', right: '0.75rem', display: 'flex', gap: '0.5rem', zIndex: 3 }}>
-                    <button onClick={() => handleLike(blog.id, blog.likes)} style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.4rem 0.6rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', cursor: 'pointer', transition: 'all 0.2s' }} onMouseOver={e => e.currentTarget.style.transform = 'scale(1.1)'} onMouseOut={e => e.currentTarget.style.transform = 'scale(1)'}>
-                      <span style={{ color: '#ef4444' }}>💖</span> {blog.likes || 0}
-                    </button>
+                    <ParticleBurst onLike={() => handleLike(blog.id, blog.likes)}>
+                      <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.4rem 0.6rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem', cursor: 'pointer' }}>
+                        <span style={{ color: '#ef4444' }}>💖</span> {blog.likes || 0}
+                      </div>
+                    </ParticleBurst>
                     <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(5px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.4rem 0.6rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.3rem', fontSize: '0.75rem' }}>
                       👁️ {blog.views || 0}
                     </div>

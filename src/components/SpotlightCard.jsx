@@ -1,5 +1,6 @@
 import React, { useRef, useState } from 'react';
 import { motion } from 'framer-motion';
+import BorderBeam from './BorderBeam';
 
 const SpotlightCard = ({ children, className = '', style = {}, variants, whileHover }) => {
   const divRef = useRef(null);
@@ -11,36 +12,23 @@ const SpotlightCard = ({ children, className = '', style = {}, variants, whileHo
 
   const handleMouseMove = (e) => {
     if (!divRef.current || isFocused) return;
-
     const div = divRef.current;
     const rect = div.getBoundingClientRect();
-
     const x = e.clientX - rect.left;
     const y = e.clientY - rect.top;
-
     setPosition({ x, y });
     setMousePosition({ x, y });
   };
 
-  const handleFocus = () => {
-    setIsFocused(true);
-    setOpacity(1);
-  };
+  const handleFocus = () => { setIsFocused(true); setOpacity(1); };
+  const handleBlur = () => { setIsFocused(false); setOpacity(0); };
+  const handleMouseEnter = () => { setOpacity(1); setIsHovered(true); };
+  const handleMouseLeave = () => { setOpacity(0); setIsHovered(false); };
 
-  const handleBlur = () => {
-    setIsFocused(false);
-    setOpacity(0);
-  };
-
-  const handleMouseEnter = () => {
-    setOpacity(1);
-    setIsHovered(true);
-  };
-
-  const handleMouseLeave = () => {
-    setOpacity(0);
-    setIsHovered(false);
-  };
+  // Normalize mouse position for gradient angle calculation
+  const glareAngle = divRef.current
+    ? (mousePosition.x / (divRef.current.offsetWidth || 1)) * 180
+    : 90;
 
   return (
     <motion.div
@@ -53,73 +41,83 @@ const SpotlightCard = ({ children, className = '', style = {}, variants, whileHo
       variants={variants}
       whileHover={whileHover}
       className={`relative overflow-hidden rounded-2xl border border-[var(--border-color)] bg-[var(--bg-secondary)] ${className}`}
-      style={{ 
-        ...style, 
+      style={{
+        ...style,
         '--mouse-x': `${mousePosition.x}px`,
         '--mouse-y': `${mousePosition.y}px`,
-        position: 'relative' 
+        position: 'relative',
       }}
     >
-      {/* Holographic Iridescent Foil Overlay */}
+      {/* ✨ Border Beam — rotating neon laser glow on hover */}
       <motion.div
         initial={{ opacity: 0 }}
-        animate={{ opacity: isHovered ? 0.5 : 0 }}
+        animate={{ opacity: isHovered ? 1 : 0 }}
+        transition={{ duration: 0.4 }}
+        style={{ position: 'absolute', inset: 0, zIndex: 0, pointerEvents: 'none', borderRadius: 'inherit' }}
+      >
+        <BorderBeam duration={4} colorFrom="#8b5cf6" colorTo="#0ea5e9" borderRadius="1rem" />
+      </motion.div>
+
+      {/* 🌈 Rainbow Holographic Iridescent Foil */}
+      <motion.div
+        initial={{ opacity: 0 }}
+        animate={{ opacity: isHovered ? 0.55 : 0 }}
         transition={{ duration: 0.3 }}
         style={{
           position: 'absolute',
-          top: 0,
-          left: 0,
-          right: 0,
-          bottom: 0,
-          zIndex: 1,
+          inset: 0,
+          zIndex: 2,
           pointerEvents: 'none',
+          borderRadius: 'inherit',
           background: `
             radial-gradient(
-              circle at ${mousePosition.x}px ${mousePosition.y}px,
-              rgba(255,255,255,0.2) 0%,
-              transparent 40%
+              ellipse at ${mousePosition.x}px ${mousePosition.y}px,
+              rgba(255,255,255,0.25) 0%,
+              transparent 50%
             ),
             linear-gradient(
-              ${(mousePosition.x / 400) * 360}deg,
-              rgba(255, 0, 0, 0.1) 0%,
-              rgba(255, 154, 0, 0.1) 10%,
-              rgba(208, 222, 33, 0.1) 20%,
-              rgba(79, 220, 74, 0.1) 30%,
-              rgba(63, 218, 216, 0.1) 40%,
-              rgba(47, 201, 226, 0.1) 50%,
-              rgba(28, 127, 238, 0.1) 60%,
-              rgba(95, 21, 242, 0.1) 70%,
-              rgba(186, 12, 248, 0.1) 80%,
-              rgba(251, 7, 217, 0.1) 90%,
-              rgba(255, 0, 0, 0.1) 100%
+              ${glareAngle}deg,
+              rgba(255, 0, 128, 0.12) 0%,
+              rgba(255, 154, 0, 0.12) 15%,
+              rgba(208, 222, 33, 0.12) 30%,
+              rgba(79, 220, 74, 0.12) 45%,
+              rgba(63, 218, 216, 0.12) 60%,
+              rgba(28, 127, 238, 0.12) 75%,
+              rgba(186, 12, 248, 0.12) 90%,
+              rgba(255, 0, 128, 0.12) 100%
             )
           `,
-          mixBlendMode: 'color-dodge'
+          mixBlendMode: 'color-dodge',
         }}
       />
 
+      {/* 🔦 Spotlight radial glow — follows mouse */}
       <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+        className="pointer-events-none absolute -inset-px transition duration-300"
         style={{
           opacity,
-          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(255,255,255,.1), transparent 40%)`,
-          zIndex: 1, // Above background, below content
-          mixBlendMode: 'screen'
+          background: `radial-gradient(600px circle at ${position.x}px ${position.y}px, rgba(255,255,255,0.12), transparent 40%)`,
+          zIndex: 2,
+          mixBlendMode: 'screen',
+          borderRadius: 'inherit',
+          transition: 'opacity 0.25s ease',
         }}
       />
-      {/* For dark mode, we might want an accent color glow */}
+
+      {/* 💡 Subtle accent-color glow at bottom (always visible slightly) */}
       <div
-        className="pointer-events-none absolute -inset-px opacity-0 transition duration-300"
+        className="pointer-events-none absolute -inset-px"
         style={{
-          opacity,
-          background: `radial-gradient(400px circle at ${position.x}px ${position.y}px, var(--accent-primary), transparent 40%)`,
-          zIndex: 0, // Very subtle background glow
-          opacity: opacity * 0.15 
+          opacity: opacity * 0.2,
+          background: `radial-gradient(500px circle at ${position.x}px ${position.y}px, var(--accent-primary), transparent 50%)`,
+          zIndex: 1,
+          borderRadius: 'inherit',
+          transition: 'opacity 0.25s ease',
         }}
       />
-      
-      {/* Content wrapper */}
-      <div style={{ position: 'relative', zIndex: 2, height: '100%', display: 'flex', flexDirection: 'column' }}>
+
+      {/* Content — always on top */}
+      <div style={{ position: 'relative', zIndex: 3, height: '100%', display: 'flex', flexDirection: 'column' }}>
         {children}
       </div>
     </motion.div>
@@ -127,3 +125,4 @@ const SpotlightCard = ({ children, className = '', style = {}, variants, whileHo
 };
 
 export default SpotlightCard;
+

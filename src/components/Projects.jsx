@@ -7,6 +7,8 @@ import LiquidImage from './LiquidImage';
 import GsapReveal from './GsapReveal';
 import { ProjectSkeleton } from './Skeleton';
 import { supabase } from '../lib/supabase';
+import ParticleBurst from './ParticleBurst';
+import CinematicTitle from './CinematicTitle';
 
 const Projects = () => {
   const [projects, setProjects] = useState([]);
@@ -129,17 +131,25 @@ const Projects = () => {
 
   return (
     <section id="projects" className="section container">
-      {/* Title Section */}
-      <GsapReveal direction="up" distance={30} stagger={0.2} duration={1}>
-        <div style={{ overflow: 'hidden', paddingBottom: '5px' }}>
-          <h2 className="heading-lg" style={{ textAlign: 'center', margin: '0' }}>
-            <TextScramble text={t.projects.title} /> <span className="gradient-text"><TextScramble text={t.projects.subtitle} /></span>
-          </h2>
-        </div>
-        <p className="text-lead" style={{ textAlign: 'center', maxWidth: '600px', margin: '0 auto 2rem auto' }}>
+      {/* Title Section — Cinematic Stagger */}
+      <div style={{ textAlign: 'center', marginBottom: '1.5rem' }}>
+        <CinematicTitle
+          words={`${t.projects.title} ${t.projects.subtitle}`}
+          highlightWords={[t.projects.subtitle]}
+          className="heading-lg"
+          style={{ textAlign: 'center', justifyContent: 'center', margin: '0' }}
+        />
+        <motion.p
+          initial={{ opacity: 0, y: 20 }}
+          whileInView={{ opacity: 1, y: 0 }}
+          viewport={{ once: true }}
+          transition={{ delay: 0.4, duration: 0.6 }}
+          className="text-lead"
+          style={{ textAlign: 'center', maxWidth: '600px', margin: '1rem auto 2rem auto' }}
+        >
           {t.projects.desc}
-        </p>
-      </GsapReveal>
+        </motion.p>
+      </div>
 
       {/* Filter Buttons */}
       {!isLoading && allTags.length > 1 && (
@@ -209,9 +219,15 @@ const Projects = () => {
                       
                       {/* Likes & Views Badge on Card */}
                       <div style={{ position: 'absolute', top: '1rem', right: '1rem', display: 'flex', gap: '0.5rem', zIndex: 3 }}>
-                        <motion.button whileHover={{ scale: 1.1 }} whileTap={{ scale: 0.9 }} onClick={(e) => handleLike(e, project.id, project.likes)} style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 0.75rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', cursor: 'pointer' }}>
-                          <span style={{ color: '#ef4444' }}>💖</span> {project.likes || 0}
-                        </motion.button>
+                        <ParticleBurst onLike={(e) => handleLike({ stopPropagation: ()=>{} }, project.id, project.likes)}>
+                          <motion.div
+                            whileHover={{ scale: 1.1 }}
+                            whileTap={{ scale: 0.9 }}
+                            style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 0.75rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem', cursor: 'pointer' }}
+                          >
+                            <span style={{ color: '#ef4444' }}>💖</span> {project.likes || 0}
+                          </motion.div>
+                        </ParticleBurst>
                         <div style={{ background: 'rgba(0,0,0,0.5)', backdropFilter: 'blur(10px)', border: '1px solid rgba(255,255,255,0.1)', padding: '0.5rem 0.75rem', borderRadius: '50px', color: 'white', display: 'flex', alignItems: 'center', gap: '0.4rem', fontSize: '0.85rem' }}>
                           👁️ {project.views || 0}
                         </div>
