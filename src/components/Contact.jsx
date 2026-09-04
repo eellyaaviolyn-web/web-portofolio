@@ -35,7 +35,8 @@ const Contact = () => {
       e.target.reset();
     } catch (err) {
       console.error('EmailJS error:', err);
-      toast.error('Gagal mengirim. Silakan hubungi via WhatsApp langsung ya! 💬');
+      const errMsg = err?.text || err?.message || JSON.stringify(err) || 'Unknown error';
+      toast.error(`Error: ${errMsg}`);
     } finally {
       setIsSubmitting(false);
     }
