@@ -159,7 +159,7 @@ const Contact = () => {
             {/* Quick Contact Cards */}
             <div>
               <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-                <span>⚡</span> {t.contact.connectTitle || 'Hubungi Langsung'}
+                {t.contact.connectTitle || 'Hubungi Langsung'}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {[
