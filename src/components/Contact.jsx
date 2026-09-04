@@ -165,7 +165,7 @@ const Contact = () => {
                 {[
                   { icon: '📞', label: 'Telepon', value: '+62 857-9798-2538', href: 'tel:+6285797982538' },
                   { icon: '💬', label: 'WhatsApp', value: '+62 857-9798-2538', href: 'https://wa.me/085797982538' },
-                  { icon: '📍', label: 'Lokasi', value: 'Indonesia 🇮🇩', href: null },
+                  { icon: '📍', label: 'Lokasi', value: 'Jatinangor, Sumedang, Jawa Barat', href: null },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
