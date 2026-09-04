@@ -16,12 +16,20 @@ const Contact = () => {
     e.preventDefault();
     setIsSubmitting(true);
 
+    const formData = new FormData(e.target);
+
     try {
-      await emailjs.sendForm(
+      emailjs.init('aCvqVepP2BYc_-p3okbY9');
+      await emailjs.send(
         'service_km5e8pw',
         'template_rdmepqu',
-        formRef.current,
-        'aCvqVepP2BYc_-p3okbY9'
+        {
+          name: formData.get('name'),
+          email: formData.get('email'),
+          message: formData.get('message'),
+          title: 'Pesan dari Portfolio',
+          time: new Date().toLocaleString('id-ID'),
+        }
       );
       toast.success('Pesan berhasil terkirim! Terima kasih sudah menghubungi saya 🎉');
       e.target.reset();
