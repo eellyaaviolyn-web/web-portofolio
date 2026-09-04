@@ -229,7 +229,7 @@ const Contact = () => {
             <span style={{ color: 'var(--text-secondary)', fontSize: '0.9rem', fontWeight: 500 }}>— Portfolio</span>
           </div>
           <p style={{ color: 'var(--text-secondary)', fontWeight: 500, fontSize: '0.9rem', margin: 0 }}>
-            © {new Date().getFullYear()} Zakia Abdillah Az-Zahra · Built with ❤️ & React
+            © {new Date().getFullYear()} Zakia Abdillah Az-Zahra
           </p>
           <p style={{ color: 'var(--text-secondary)', fontSize: '0.78rem', margin: 0, opacity: 0.6 }}>
             {t.contact.rights}
