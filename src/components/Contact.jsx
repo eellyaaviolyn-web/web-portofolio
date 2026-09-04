@@ -17,14 +17,13 @@ const Contact = () => {
     setIsSubmitting(true);
 
     try {
-      // EmailJS config — ganti dengan Service ID, Template ID, dan Public Key kamu
       await emailjs.sendForm(
-        import.meta.env.VITE_EMAILJS_SERVICE_ID || 'service_portfolio',
-        import.meta.env.VITE_EMAILJS_TEMPLATE_ID || 'template_contact',
+        'service_km5e8pw',
+        'template_rdmepqu',
         formRef.current,
-        import.meta.env.VITE_EMAILJS_PUBLIC_KEY || 'your_public_key'
+        'aCvqVepP2BYc_-p3okbY9'
       );
-      toast.success('Pesan berhasil terkirim! Saya akan segera membalas. 🎉');
+      toast.success('Pesan berhasil terkirim! Terima kasih sudah menghubungi saya 🎉');
       e.target.reset();
     } catch (err) {
       console.error('EmailJS error:', err);
@@ -137,7 +136,7 @@ const Contact = () => {
                     Mengirim...
                   </>
                 ) : (
-                  <>{t.contact.send} 🚀</>
+                  <>{t.contact.send}</>
                 )}
               </motion.button>
             </form>
