@@ -19,7 +19,7 @@ const Contact = () => {
     const formData = new FormData(e.target);
 
     try {
-      emailjs.init('aCvqVepP2BYc_-p3okbY9');
+      emailjs.init('3ITqVBk8h3_op6zUL');
       await emailjs.send(
         'service_km5e8pw',
         'template_rdmepqu',
