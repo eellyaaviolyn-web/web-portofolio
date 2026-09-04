@@ -88,7 +88,7 @@ const Contact = () => {
                 <input
                   type="text"
                   id="name"
-                  name="from_name"
+                  name="name"
                   required
                   placeholder="Nama kamu..."
                   className="input-field"
@@ -102,7 +102,7 @@ const Contact = () => {
                 <input
                   type="email"
                   id="email"
-                  name="from_email"
+                  name="email"
                   required
                   placeholder="email@kamu.com"
                   className="input-field"
