@@ -9,37 +9,6 @@ import KineticText from './KineticText';
 import LiquidImage from './LiquidImage';
 import TextReveal from './TextReveal';
 
-// Animated number counter
-const CountUp = ({ end, suffix = '' }) => {
-  const [count, setCount] = useState(0);
-  const ref = useRef(null);
-  const started = useRef(false);
-
-  useEffect(() => {
-    const observer = new IntersectionObserver(([entry]) => {
-      if (entry.isIntersecting && !started.current) {
-        started.current = true;
-        let start = 0;
-        const duration = 1500;
-        const step = (end / duration) * 16;
-        const timer = setInterval(() => {
-          start += step;
-          if (start >= end) { setCount(end); clearInterval(timer); }
-          else setCount(Math.floor(start));
-        }, 16);
-      }
-    }, { threshold: 0.5 });
-    if (ref.current) observer.observe(ref.current);
-    return () => observer.disconnect();
-  }, [end]);
-
-  return (
-    <span ref={ref} style={{ fontSize: '2.2rem', fontWeight: 800, background: 'linear-gradient(135deg, var(--accent-primary), var(--accent-secondary))', WebkitBackgroundClip: 'text', WebkitTextFillColor: 'transparent', backgroundClip: 'text', lineHeight: 1 }}>
-      {count}{suffix}
-    </span>
-  );
-};
-
 const Hero = () => {
   const { t } = useContext(LanguageContext);
   
@@ -167,28 +136,6 @@ const Hero = () => {
           </MagneticElement>
         </motion.div>
 
-        {/* ✨ Stats Counter Row */}
-        <motion.div
-          variants={itemVariants}
-          style={{ display: 'flex', gap: '2.5rem', flexWrap: 'wrap', marginTop: '3rem', paddingTop: '2rem', borderTop: '1px solid var(--border-color)' }}
-        >
-          {[
-            { value: 10, suffix: '+', label: 'Projects Built' },
-            { value: 1, suffix: ' yr', label: 'Learning Journey' },
-            { value: 3, suffix: '+', label: 'Tech Stacks' },
-          ].map((stat, i) => (
-            <motion.div
-              key={i}
-              initial={{ opacity: 0, y: 20 }}
-              animate={{ opacity: 1, y: 0 }}
-              transition={{ delay: 1.2 + i * 0.15, type: 'spring', stiffness: 60 }}
-              style={{ display: 'flex', flexDirection: 'column', gap: '0.2rem' }}
-            >
-              <CountUp end={stat.value} suffix={stat.suffix} />
-              <span style={{ fontSize: '0.8rem', color: 'var(--text-secondary)', fontWeight: 500, letterSpacing: '0.5px' }}>{stat.label}</span>
-            </motion.div>
-          ))}
-        </motion.div>
 
         {/* 🌐 Social Links Row */}
         <motion.div
