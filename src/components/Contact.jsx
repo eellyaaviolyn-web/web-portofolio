@@ -11,12 +11,50 @@ const Contact = () => {
   const { t } = useContext(LanguageContext);
   const [isSubmitting, setIsSubmitting] = useState(false);
   const formRef = useRef(null);
+  const lastSentRef = useRef(0);
+
+  // Sanitize input — hapus karakter berbahaya
+  const sanitize = (str) => String(str ?? '').trim().slice(0, 1000).replace(/<[^>]*>/g, '');
 
   const handleSubmit = async (e) => {
     e.preventDefault();
-    setIsSubmitting(true);
 
+    // 🛡️ Honeypot check — bot biasanya mengisi field tersembunyi
+    const honeypot = e.target.querySelector('[name="website"]');
+    if (honeypot?.value) return; // Diam-diam tolak tanpa notif
+
+    // 🛡️ Rate limiting — max 1 pesan per 60 detik
+    const now = Date.now();
+    const cooldown = 60_000;
+    if (now - lastSentRef.current < cooldown) {
+      const sisa = Math.ceil((cooldown - (now - lastSentRef.current)) / 1000);
+      toast.error(`Harap tunggu ${sisa} detik sebelum mengirim lagi.`);
+      return;
+    }
+
+    setIsSubmitting(true);
     const formData = new FormData(e.target);
+
+    // 🛡️ Validasi & sanitasi input
+    const name = sanitize(formData.get('name'));
+    const email = sanitize(formData.get('email'));
+    const message = sanitize(formData.get('message'));
+
+    if (!name || !email || !message) {
+      toast.error('Semua kolom harus diisi!');
+      setIsSubmitting(false);
+      return;
+    }
+    if (!/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email)) {
+      toast.error('Format email tidak valid!');
+      setIsSubmitting(false);
+      return;
+    }
+    if (message.length < 10) {
+      toast.error('Pesan terlalu pendek, minimal 10 karakter.');
+      setIsSubmitting(false);
+      return;
+    }
 
     try {
       emailjs.init('3ITqVBk8h3_op6zUL');
@@ -24,19 +62,19 @@ const Contact = () => {
         'service_km5e8pw',
         'template_rdmepqu',
         {
-          name: formData.get('name'),
-          email: formData.get('email'),
-          message: formData.get('message'),
+          name,
+          email,
+          message,
           title: 'Pesan dari Portfolio',
           time: new Date().toLocaleString('id-ID'),
         }
       );
+      lastSentRef.current = Date.now();
       toast.success('Pesan berhasil terkirim! Terima kasih sudah menghubungi saya 🎉');
       e.target.reset();
     } catch (err) {
       console.error('EmailJS error:', err);
-      const errMsg = err?.text || err?.message || JSON.stringify(err) || 'Unknown error';
-      toast.error(`Error: ${errMsg}`);
+      toast.error('Gagal mengirim. Silakan hubungi via WhatsApp langsung ya! 💬');
     } finally {
       setIsSubmitting(false);
     }
@@ -89,6 +127,8 @@ const Contact = () => {
             </h3>
             
             <form ref={formRef} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
+              {/* 🛡️ Honeypot — disembunyikan dari pengguna, tapi bot akan mengisinya */}
+              <input name="website" type="text" tabIndex="-1" autoComplete="off" style={{ position: 'absolute', left: '-9999px', opacity: 0, height: 0, width: 0 }} />
               <div>
                 <label htmlFor="name" style={{ display: 'block', marginBottom: '0.5rem', fontWeight: 600, fontSize: '0.9rem', color: 'var(--text-secondary)', textTransform: 'uppercase', letterSpacing: '0.5px' }}>
                   {t.contact.formName}
