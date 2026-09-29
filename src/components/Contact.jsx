@@ -6,6 +6,7 @@ import GsapReveal from './GsapReveal';
 import { toast } from './Toast';
 import emailjs from '@emailjs/browser';
 import CinematicTitle from './CinematicTitle';
+import DOMPurify from 'dompurify';
 
 const Contact = () => {
   const { t } = useContext(LanguageContext);
@@ -13,8 +14,12 @@ const Contact = () => {
   const formRef = useRef(null);
   const lastSentRef = useRef(0);
 
-  // Sanitize input — hapus karakter berbahaya
-  const sanitize = (str) => String(str ?? '').trim().slice(0, 1000).replace(/<[^>]*>/g, '');
+  // 🛡️ Sanitasi tingkat profesional dengan DOMPurify — hapus semua XSS & script berbahaya
+  const sanitize = (str) => DOMPurify.sanitize(String(str ?? '').trim().slice(0, 2000), {
+    ALLOWED_TAGS: [],      // Tidak ada tag HTML yang diizinkan
+    ALLOWED_ATTR: [],      // Tidak ada atribut yang diizinkan
+    KEEP_CONTENT: true,    // Tetap ambil teks di dalam tag
+  });
 
   const handleSubmit = async (e) => {
     e.preventDefault();
