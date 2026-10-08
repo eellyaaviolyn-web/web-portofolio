@@ -40,24 +40,29 @@ const Navbar = ({ theme, toggleTheme }) => {
 
   return (
     <motion.nav 
-      initial={{ y: -100 }}
-      animate={{ y: 0 }}
-      transition={{ type: 'spring', stiffness: 100, damping: 20, delay: 0.2 }}
+      initial={{ y: -80, opacity: 0 }}
+      animate={{ y: 0, opacity: 1 }}
+      transition={{ type: 'spring', stiffness: 90, damping: 18, delay: 0.1 }}
       style={{
         position: 'fixed',
-        top: 0,
-        width: '100%',
+        top: '1.25rem',
+        left: '50%',
+        transform: 'translateX(-50%)',
+        width: 'min(94%, 1160px)',
         zIndex: 1000,
-        transition: 'background-color 0.3s ease, padding 0.3s ease, border-color 0.3s ease, backdrop-filter 0.3s ease',
-        backgroundColor: isScrolled ? 'var(--glass-bg)' : 'transparent',
-        backdropFilter: isScrolled ? 'blur(20px)' : 'none',
-        WebkitBackdropFilter: isScrolled ? 'blur(20px)' : 'none',
-        borderBottom: isScrolled ? '1px solid var(--glass-border)' : '1px solid transparent',
-        padding: isScrolled ? '1rem 0' : '1.5rem 0',
-        boxShadow: isScrolled ? 'var(--shadow-sm)' : 'none'
+        backgroundColor: 'var(--glass-bg)',
+        backdropFilter: 'blur(24px)',
+        WebkitBackdropFilter: 'blur(24px)',
+        border: '1px solid var(--glass-border)',
+        borderRadius: '9999px',
+        padding: isScrolled ? '0.65rem 1.4rem' : '0.85rem 1.6rem',
+        boxShadow: isScrolled
+          ? '0 20px 40px -15px rgba(0, 0, 0, 0.4), var(--inner-highlight)'
+          : '0 10px 25px -10px rgba(0, 0, 0, 0.2), var(--inner-highlight)',
+        transition: 'all 0.4s var(--ease-fluid)',
       }}
     >
-      <div className="container" style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center' }}>
+      <div style={{ display: 'flex', justifyContent: 'space-between', alignItems: 'center', width: '100%' }}>
         <div style={{ display: 'flex', alignItems: 'center', gap: '1rem' }}>
           <a 
             href="#home" 

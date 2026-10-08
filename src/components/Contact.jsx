@@ -177,20 +177,23 @@ const Contact = () => {
                 />
               </div>
               <motion.button
-                whileHover={{ scale: 1.02, boxShadow: '0 15px 30px rgba(99,102,241,0.35)' }}
+                whileHover={{ scale: 1.02 }}
                 whileTap={{ scale: 0.98 }}
                 type="submit"
                 disabled={isSubmitting}
                 className="btn btn-primary"
-                style={{ width: '100%', marginTop: '0.5rem', fontSize: '1.05rem', padding: '1rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.5rem', opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                style={{ width: '100%', marginTop: '0.5rem', fontSize: '1.02rem', padding: '0.85rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
               >
                 {isSubmitting ? (
                   <>
                     <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>⏳</motion.span>
-                    Mengirim...
+                    <span>Mengirim...</span>
                   </>
                 ) : (
-                  <>{t.contact.send}</>
+                  <>
+                    <span>{t.contact.send}</span>
+                    <span className="btn-icon-bubble">🚀</span>
+                  </>
                 )}
               </motion.button>
             </form>

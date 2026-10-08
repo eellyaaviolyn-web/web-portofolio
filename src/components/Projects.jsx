@@ -252,8 +252,14 @@ const Projects = () => {
                         {project.description.length > 100 ? project.description.substring(0, 100) + '...' : project.description}
                       </p>
                       
-                      <div style={{ color: 'var(--accent-primary)', fontSize: '0.9rem', fontWeight: 600, display: 'flex', alignItems: 'center', gap: '0.5rem' }}>
-                        Click to see details <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2"><path d="M5 12h14M12 5l7 7-7 7"/></svg>
+                      <div style={{ color: 'var(--accent-primary)', fontSize: '0.92rem', fontWeight: 600, display: 'inline-flex', alignItems: 'center', gap: '0.6rem', marginTop: '0.5rem' }}>
+                        <span>Click to see details</span>
+                        <span className="btn-icon-bubble" style={{ width: '1.6rem', height: '1.6rem', background: 'rgba(99,102,241,0.12)' }}>
+                          <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                            <line x1="5" y1="12" x2="19" y2="12"></line>
+                            <polyline points="12 5 19 12 12 19"></polyline>
+                          </svg>
+                        </span>
                       </div>
                     </div>
                   </SpotlightCard>

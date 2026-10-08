@@ -53,7 +53,14 @@ const Hero = () => {
         style={{ flex: '1', minWidth: '300px', textAlign: 'left', zIndex: 2 }}
       >
 
-        <motion.h2 variants={itemVariants} className="text-lead" style={{ color: 'var(--accent-primary)', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '1rem' }}>
+        <motion.div variants={itemVariants}>
+          <div className="eyebrow-pill">
+            <span className="eyebrow-dot"></span>
+            <span>Available for projects & roles</span>
+          </div>
+        </motion.div>
+
+        <motion.h2 variants={itemVariants} className="text-lead" style={{ color: 'var(--accent-primary)', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
           {t.hero.greeting}{' '}
           <motion.span
             style={{ display: 'inline-block', originX: 0.7, originY: 0.7, cursor: 'default' }}
@@ -64,7 +71,7 @@ const Hero = () => {
           </motion.span>
         </motion.h2>
         
-        <motion.div variants={itemVariants} style={{ marginBottom: '1.5rem' }}>
+        <motion.div variants={itemVariants} style={{ marginBottom: '1.25rem' }}>
           <TextReveal 
             text="Zakia Abdillah Az-Zahra." 
             className="heading-xl gradient-text" 
@@ -73,7 +80,7 @@ const Hero = () => {
           />
         </motion.div>
         
-        <motion.h3 variants={itemVariants} className="heading-lg" style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: 'clamp(1.5rem, 3vw, 2.5rem)' }}>
+        <motion.h3 variants={itemVariants} className="heading-lg" style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: 'clamp(1.4rem, 2.8vw, 2.3rem)', fontWeight: 500 }}>
           {t.hero.welcome}
         </motion.h3>
         
@@ -81,7 +88,7 @@ const Hero = () => {
           <TerminalSandbox />
         </motion.div>
         
-        <motion.div variants={itemVariants} style={{ display: 'flex', gap: '1.5rem', flexWrap: 'wrap', alignItems: 'center' }}>
+        <motion.div variants={itemVariants} style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center', marginTop: '1.5rem' }}>
           <MagneticElement stretch={0.2}>
             <button 
               onClick={(e) => {
@@ -89,9 +96,15 @@ const Hero = () => {
                 document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="btn btn-primary" 
-              style={{ padding: '1rem 2.5rem', fontSize: '1.1rem', boxShadow: '0 0 20px rgba(99, 102, 241, 0.4)' }}
+              style={{ padding: '0.85rem 1.8rem', fontSize: '1.02rem' }}
             >
-              {t.hero.viewWork}
+              <span>{t.hero.viewWork}</span>
+              <span className="btn-icon-bubble">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <line x1="7" y1="17" x2="17" y2="7"></line>
+                  <polyline points="7 7 17 7 17 17"></polyline>
+                </svg>
+              </span>
             </button>
           </MagneticElement>
           <MagneticElement stretch={0.2}>
@@ -101,37 +114,33 @@ const Hero = () => {
                 document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="btn btn-outline" 
-              style={{ padding: '1rem 2.5rem', fontSize: '1.1rem' }}
+              style={{ padding: '0.85rem 1.8rem', fontSize: '1.02rem' }}
             >
-              {t.hero.contactMe}
+              <span>{t.hero.contactMe}</span>
+              <span className="btn-icon-bubble">💬</span>
             </button>
           </MagneticElement>
           <MagneticElement stretch={0.2}>
             <motion.a
               href="/cv.pdf"
               download="CV-Zakia-Abdillah.pdf"
-              className="btn"
-              whileHover={{ scale: 1.05 }}
-              whileTap={{ scale: 0.95 }}
+              className="btn btn-outline"
+              whileHover={{ scale: 1.03 }}
+              whileTap={{ scale: 0.97 }}
               style={{
-                padding: '1rem 2rem',
-                fontSize: '1rem',
-                background: 'linear-gradient(135deg, rgba(16,185,129,0.15), rgba(16,185,129,0.05))',
-                border: '1px solid rgba(16,185,129,0.4)',
-                color: '#10b981',
-                borderRadius: '50px',
-                display: 'flex',
-                alignItems: 'center',
-                gap: '0.5rem',
+                padding: '0.85rem 1.8rem',
+                fontSize: '1.02rem',
                 textDecoration: 'none',
               }}
             >
-              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                <polyline points="7 10 12 15 17 10"/>
-                <line x1="12" y1="15" x2="12" y2="3"/>
-              </svg>
-              Download CV
+              <span>Download CV</span>
+              <span className="btn-icon-bubble">
+                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                  <polyline points="7 10 12 15 17 10"/>
+                  <line x1="12" y1="15" x2="12" y2="3"/>
+                </svg>
+              </span>
             </motion.a>
           </MagneticElement>
         </motion.div>

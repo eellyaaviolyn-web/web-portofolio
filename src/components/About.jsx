@@ -140,7 +140,13 @@ const About = () => {
                 className="btn btn-primary"
                 style={{ width: 'fit-content', marginTop: '1rem', cursor: 'pointer', position: 'relative', zIndex: 9999, pointerEvents: 'all' }}
               >
-                {t.about.connectBtn}
+                <span>{t.about.connectBtn}</span>
+                <span className="btn-icon-bubble">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
+                    <line x1="7" y1="17" x2="17" y2="7"></line>
+                    <polyline points="7 7 17 7 17 17"></polyline>
+                  </svg>
+                </span>
               </button>
             </GlowCard>
           </div>
