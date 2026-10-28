@@ -127,8 +127,8 @@ const Contact = () => {
             {/* Decorative gradient top bar */}
             <div style={{ position: 'absolute', top: 0, left: 0, right: 0, height: '3px', background: 'linear-gradient(90deg, var(--accent-primary), var(--accent-secondary), #ec4899)' }} />
             
-            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '2rem', color: 'var(--text-primary)', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
-              <span style={{ fontSize: '1.5rem' }}>✉️</span> {t.contact.formTitle || 'Kirim Pesan'}
+            <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '2rem', color: 'var(--text-primary)' }}>
+              {t.contact.formTitle || 'Kirim Pesan'}
             </h3>
             
             <form ref={formRef} onSubmit={handleSubmit} style={{ display: 'flex', flexDirection: 'column', gap: '1.5rem' }}>
@@ -182,18 +182,15 @@ const Contact = () => {
                 type="submit"
                 disabled={isSubmitting}
                 className="btn btn-primary"
-                style={{ width: '100%', marginTop: '0.5rem', fontSize: '1.02rem', padding: '0.85rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', gap: '0.75rem', opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
+                style={{ width: '100%', marginTop: '0.5rem', fontSize: '1.02rem', padding: '0.85rem 1.5rem', display: 'flex', alignItems: 'center', justifyContent: 'center', opacity: isSubmitting ? 0.7 : 1, cursor: isSubmitting ? 'not-allowed' : 'pointer' }}
               >
                 {isSubmitting ? (
                   <>
                     <motion.span animate={{ rotate: 360 }} transition={{ duration: 1, repeat: Infinity, ease: 'linear' }}>⏳</motion.span>
-                    <span>Mengirim...</span>
+                    <span style={{ marginLeft: '0.5rem' }}>Mengirim...</span>
                   </>
                 ) : (
-                  <>
-                    <span>{t.contact.send}</span>
-                    <span className="btn-icon-bubble">🚀</span>
-                  </>
+                  t.contact.send
                 )}
               </motion.button>
             </form>
@@ -206,15 +203,15 @@ const Contact = () => {
             
             {/* Quick Contact Cards */}
             <div>
-              <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '1.5rem', display: 'flex', alignItems: 'center', gap: '0.75rem' }}>
+              <h3 style={{ fontSize: '1.4rem', fontWeight: 700, marginBottom: '1.5rem', color: 'var(--text-primary)' }}>
                 {t.contact.connectTitle || 'Hubungi Langsung'}
               </h3>
               <div style={{ display: 'flex', flexDirection: 'column', gap: '1rem' }}>
                 {[
-                  { icon: '💬', label: 'WhatsApp', value: '+62 857-9798-2538', href: 'https://wa.me/085797982538' },
-                  { icon: '✉️', label: 'Email', value: 'eellyaaviolyn@gmail.com', href: 'mailto:eellyaaviolyn@gmail.com' },
-                  { icon: '📞', label: 'Telepon', value: '+62 857-9798-2538', href: 'tel:+6285797982538' },
-                  { icon: '📍', label: 'Lokasi', value: 'Jatinangor, Sumedang, Jawa Barat', href: null },
+                  { label: 'WhatsApp', value: '+62 857-9798-2538', href: 'https://wa.me/085797982538' },
+                  { label: 'Email', value: 'eellyaaviolyn@gmail.com', href: 'mailto:eellyaaviolyn@gmail.com' },
+                  { label: 'Telepon', value: '+62 857-9798-2538', href: 'tel:+6285797982538' },
+                  { label: 'Lokasi', value: 'Jatinangor, Sumedang, Jawa Barat', href: null },
                 ].map((item, i) => (
                   <motion.div
                     key={i}
@@ -223,17 +220,14 @@ const Contact = () => {
                     viewport={{ once: true }}
                     transition={{ delay: i * 0.1 }}
                     className="glass"
-                    style={{ display: 'flex', alignItems: 'center', gap: '1rem', padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}
+                    style={{ padding: '1rem 1.25rem', borderRadius: '12px', border: '1px solid var(--border-color)' }}
                   >
-                    <span style={{ fontSize: '1.4rem', flexShrink: 0 }}>{item.icon}</span>
-                    <div>
-                      <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0 }}>{item.label}</p>
-                      {item.href ? (
-                        <a href={item.href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>{item.value}</a>
-                      ) : (
-                        <p style={{ color: 'var(--text-primary)', fontWeight: 600, margin: 0 }}>{item.value}</p>
-                      )}
-                    </div>
+                    <p style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', fontWeight: 600, textTransform: 'uppercase', letterSpacing: '0.5px', margin: 0, marginBottom: '0.25rem' }}>{item.label}</p>
+                    {item.href ? (
+                      <a href={item.href} target="_blank" rel="noopener noreferrer" style={{ color: 'var(--text-primary)', fontWeight: 600, textDecoration: 'none' }}>{item.value}</a>
+                    ) : (
+                      <p style={{ color: 'var(--text-primary)', fontWeight: 600, margin: 0 }}>{item.value}</p>
+                    )}
                   </motion.div>
                 ))}
               </div>

@@ -72,7 +72,6 @@ const Portfolio = ({ theme, toggleTheme }) => {
       <CommandPalette theme={theme} toggleTheme={toggleTheme} />
       <main>
         <Hero />
-        <SkillsMarquee />
         <About />
         <Services />
         <Projects />

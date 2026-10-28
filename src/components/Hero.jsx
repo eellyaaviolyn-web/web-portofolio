@@ -86,15 +86,9 @@ const Hero = () => {
                 document.getElementById('projects')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="btn btn-primary" 
-              style={{ padding: '0.85rem 1.8rem', fontSize: '1.02rem' }}
+              style={{ padding: '0.85rem 2rem', fontSize: '1.02rem' }}
             >
-              <span>{t.hero.viewWork}</span>
-              <span className="btn-icon-bubble">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <line x1="7" y1="17" x2="17" y2="7"></line>
-                  <polyline points="7 7 17 7 17 17"></polyline>
-                </svg>
-              </span>
+              {t.hero.viewWork}
             </button>
           </MagneticElement>
           <MagneticElement stretch={0.2}>
@@ -104,10 +98,9 @@ const Hero = () => {
                 document.getElementById('contact')?.scrollIntoView({ behavior: 'smooth' });
               }}
               className="btn btn-outline" 
-              style={{ padding: '0.85rem 1.8rem', fontSize: '1.02rem' }}
+              style={{ padding: '0.85rem 2rem', fontSize: '1.02rem' }}
             >
-              <span>{t.hero.contactMe}</span>
-              <span className="btn-icon-bubble">💬</span>
+              {t.hero.contactMe}
             </button>
           </MagneticElement>
           <MagneticElement stretch={0.2}>
@@ -118,19 +111,12 @@ const Hero = () => {
               whileHover={{ scale: 1.03 }}
               whileTap={{ scale: 0.97 }}
               style={{
-                padding: '0.85rem 1.8rem',
+                padding: '0.85rem 2rem',
                 fontSize: '1.02rem',
                 textDecoration: 'none',
               }}
             >
-              <span>Download CV</span>
-              <span className="btn-icon-bubble">
-                <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" strokeWidth="2.5" strokeLinecap="round" strokeLinejoin="round">
-                  <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
-                  <polyline points="7 10 12 15 17 10"/>
-                  <line x1="12" y1="15" x2="12" y2="3"/>
-                </svg>
-              </span>
+              Download CV
             </motion.a>
           </MagneticElement>
         </motion.div>
