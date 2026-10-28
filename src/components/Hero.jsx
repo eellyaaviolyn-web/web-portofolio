@@ -53,13 +53,6 @@ const Hero = () => {
         style={{ flex: '1', minWidth: '300px', textAlign: 'left', zIndex: 2 }}
       >
 
-        <motion.div variants={itemVariants}>
-          <div className="eyebrow-pill">
-            <span className="eyebrow-dot"></span>
-            <span>Available for projects & roles</span>
-          </div>
-        </motion.div>
-
         <motion.h2 variants={itemVariants} className="text-lead" style={{ color: 'var(--accent-primary)', fontWeight: 600, letterSpacing: '2px', textTransform: 'uppercase', marginBottom: '0.75rem' }}>
           {t.hero.greeting}{' '}
           <motion.span
@@ -80,15 +73,11 @@ const Hero = () => {
           />
         </motion.div>
         
-        <motion.h3 variants={itemVariants} className="heading-lg" style={{ color: 'var(--text-secondary)', marginBottom: '2rem', fontSize: 'clamp(1.4rem, 2.8vw, 2.3rem)', fontWeight: 500 }}>
+        <motion.h3 variants={itemVariants} className="heading-lg" style={{ color: 'var(--text-secondary)', marginBottom: '1.75rem', fontSize: 'clamp(1.4rem, 2.8vw, 2.3rem)', fontWeight: 500 }}>
           {t.hero.welcome}
         </motion.h3>
         
-        <motion.div variants={itemVariants}>
-          <TerminalSandbox />
-        </motion.div>
-        
-        <motion.div variants={itemVariants} style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center', marginTop: '1.5rem' }}>
+        <motion.div variants={itemVariants} style={{ display: 'flex', gap: '1.25rem', flexWrap: 'wrap', alignItems: 'center' }}>
           <MagneticElement stretch={0.2}>
             <button 
               onClick={(e) => {
@@ -145,11 +134,10 @@ const Hero = () => {
           </MagneticElement>
         </motion.div>
 
-
         {/* 🌐 Social Links Row */}
         <motion.div
           variants={itemVariants}
-          style={{ display: 'flex', gap: '1rem', marginTop: '2rem', alignItems: 'center' }}
+          style={{ display: 'flex', gap: '1rem', marginTop: '1.5rem', alignItems: 'center' }}
         >
           <span style={{ fontSize: '0.78rem', color: 'var(--text-secondary)', letterSpacing: '2px', textTransform: 'uppercase', fontWeight: 600 }}>Find me on</span>
           {[
@@ -178,6 +166,11 @@ const Hero = () => {
               {s.icon}
             </motion.a>
           ))}
+        </motion.div>
+
+        {/* 💻 Terminal Sandbox */}
+        <motion.div variants={itemVariants} style={{ marginTop: '2.5rem' }}>
+          <TerminalSandbox />
         </motion.div>
       </motion.div>
 

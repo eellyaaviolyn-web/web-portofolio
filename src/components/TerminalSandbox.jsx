@@ -99,13 +99,13 @@ const TerminalSandbox = () => {
 
       {/* Terminal Body */}
       <div style={{
-        padding: '1.5rem',
-        minHeight: '250px',
-        maxHeight: '350px',
+        padding: '1.25rem',
+        minHeight: '130px',
+        maxHeight: '200px',
         overflowY: 'auto',
         color: '#f8fafc',
-        fontSize: '0.9rem',
-        lineHeight: 1.6
+        fontSize: '0.88rem',
+        lineHeight: 1.5
       }}>
         {history.map((line, i) => (
           <div key={i} style={{ 
