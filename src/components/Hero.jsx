@@ -1,5 +1,5 @@
 import React, { useContext, useEffect, useRef, useState } from 'react';
-import { motion, useScroll, useTransform } from 'framer-motion'; 
+import { motion, useScroll, useTransform, AnimatePresence } from 'framer-motion'; 
 import { LanguageContext } from '../context/LanguageContext';
 import fotoProfil from '../assets/foto.jpeg';
 import TerminalSandbox from './TerminalSandbox';
@@ -11,6 +11,7 @@ import TextReveal from './TextReveal';
 
 const Hero = () => {
   const { t } = useContext(LanguageContext);
+  const [showTerminal, setShowTerminal] = useState(false);
   
   // Variants for staggered text animation
   const containerVariants = {
@@ -168,9 +169,46 @@ const Hero = () => {
           ))}
         </motion.div>
 
-        {/* 💻 Terminal Sandbox */}
-        <motion.div variants={itemVariants} style={{ marginTop: '2.5rem' }}>
-          <TerminalSandbox />
+        {/* 💻 Interactive Terminal Sandbox Toggle */}
+        <motion.div variants={itemVariants} style={{ marginTop: '2rem' }}>
+          <motion.button
+            onClick={() => setShowTerminal(prev => !prev)}
+            whileHover={{ scale: 1.03 }}
+            whileTap={{ scale: 0.97 }}
+            style={{
+              display: 'inline-flex',
+              alignItems: 'center',
+              gap: '0.6rem',
+              padding: '0.55rem 1.15rem',
+              borderRadius: '50px',
+              background: 'var(--glass-bg)',
+              border: '1px solid var(--border-color)',
+              color: 'var(--text-secondary)',
+              fontSize: '0.85rem',
+              fontWeight: 600,
+              cursor: 'pointer',
+              backdropFilter: 'blur(10px)',
+              transition: 'all 0.3s ease',
+            }}
+          >
+            <span style={{ color: '#10b981', fontFamily: 'monospace', fontWeight: 800 }}>&gt;_</span>
+            <span>{showTerminal ? 'Tutup Terminal' : 'Buka Terminal Interaktif'}</span>
+            <span style={{ fontSize: '0.75rem', opacity: 0.7 }}>{showTerminal ? '▲' : '▼'}</span>
+          </motion.button>
+
+          <AnimatePresence>
+            {showTerminal && (
+              <motion.div
+                initial={{ opacity: 0, height: 0 }}
+                animate={{ opacity: 1, height: 'auto' }}
+                exit={{ opacity: 0, height: 0 }}
+                transition={{ duration: 0.35, ease: 'easeInOut' }}
+                style={{ overflow: 'hidden', marginTop: '1rem' }}
+              >
+                <TerminalSandbox />
+              </motion.div>
+            )}
+          </AnimatePresence>
         </motion.div>
       </motion.div>
 
@@ -178,7 +216,7 @@ const Hero = () => {
         initial={{ opacity: 0, scale: 0.8 }}
         animate={{ opacity: 1, scale: 1 }}
         transition={{ duration: 0.8, delay: 0.5, type: 'spring', stiffness: 40 }}
-        style={{ flex: '1', minWidth: '300px', display: 'flex', justifyContent: 'center', alignItems: 'flex-end', position: 'relative', minHeight: '500px' }}
+        style={{ flex: '1', minWidth: '300px', display: 'flex', justifyContent: 'center', alignItems: 'center', position: 'relative', minHeight: '480px' }}
       >
         {/* Lingkaran Ungu di belakang foto dengan animasi rotasi/pulse */}
         <motion.div 

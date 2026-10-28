@@ -42,34 +42,47 @@ const Projects = () => {
       if (data && data.length > 0) {
         setProjects(data);
       } else {
-        // Fallback Data if empty
+        // Curated Projects Showcase
         setProjects([
           {
             id: 1,
-            title: 'E-commerce App',
-            description: 'A modern fullstack e-commerce solution with React and Node.js.',
-            link: '#',
-            image: 'https://images.unsplash.com/photo-1557821552-17105176677c?auto=format&fit=crop&w=800&q=80',
-            themeColor: '#8b5cf6',
-            tags: ['React.js', 'Node.js'],
+            title: 'Sistem Informasi Sekolah & Akademik',
+            description: 'Platform manajemen data siswa, absensi digital, dan rekap nilai terpadu berbasis web responsif untuk SMK.',
+            link: 'https://github.com/eellyaaviolyn-web',
+            github_link: 'https://github.com/eellyaaviolyn-web',
+            image: 'https://images.unsplash.com/photo-1509062522246-3755977927d7?auto=format&fit=crop&w=1000&q=80',
+            themeColor: '#6366f1',
+            tags: ['PHP', 'MySQL', 'Tailwind CSS', 'JavaScript'],
           },
           {
             id: 2,
-            title: 'Weather Dashboard',
-            description: 'Real-time weather tracking using OpenWeather API.',
-            link: '#',
-            image: 'https://images.unsplash.com/photo-1504608524841-42fe6f032b4b?auto=format&fit=crop&w=800&q=80',
-            themeColor: '#0ea5e9',
-            tags: ['React.js', 'JavaScript'],
+            title: 'E-Commerce & Kasir Pintar (POS)',
+            description: 'Aplikasi toko online modern dengan katalog produk, keranjang belanja, checkout, dan manajemen inventaris real-time.',
+            link: 'https://github.com/eellyaaviolyn-web',
+            github_link: 'https://github.com/eellyaaviolyn-web',
+            image: 'https://images.unsplash.com/photo-1556742049-0a67c5574f73?auto=format&fit=crop&w=1000&q=80',
+            themeColor: '#8b5cf6',
+            tags: ['React.js', 'Node.js', 'REST API', 'Tailwind CSS'],
           },
           {
             id: 3,
-            title: 'Task Management',
-            description: 'A drag-and-drop task management tool built with Vite.',
-            link: '#',
-            image: 'https://images.unsplash.com/photo-1540350394557-8d14678e7f91?auto=format&fit=crop&w=800&q=80',
-            themeColor: '#f43f5e',
-            tags: ['React.js', 'Tailwind CSS'],
+            title: 'Dashboard Cuaca & Kualitas Udara',
+            description: 'Aplikasi pelacak cuaca dan indeks kualitas udara (AQI) real-time dengan integrasi OpenWeather API dan grafik interaktif.',
+            link: 'https://github.com/eellyaaviolyn-web',
+            github_link: 'https://github.com/eellyaaviolyn-web',
+            image: 'https://images.unsplash.com/photo-1592210454359-9043f067919b?auto=format&fit=crop&w=1000&q=80',
+            themeColor: '#0ea5e9',
+            tags: ['JavaScript', 'API Integration', 'Chart.js', 'CSS Grid'],
+          },
+          {
+            id: 4,
+            title: 'Web Portofolio Interaktif (Cinematic Edition)',
+            description: 'Portofolio personal berkinerja tinggi dengan audio haptik, smooth scroll 60FPS Lenis, multi-bahasa, dan dark/light mode.',
+            link: 'https://web-portofolio-kappa-nine.vercel.app/',
+            github_link: 'https://github.com/eellyaaviolyn-web/web-portofolio',
+            image: 'https://images.unsplash.com/photo-1507238691740-187a5b1d37b8?auto=format&fit=crop&w=1000&q=80',
+            themeColor: '#ec4899',
+            tags: ['React 19', 'GSAP', 'Lenis', 'Framer Motion'],
           }
         ]);
       }

@@ -91,10 +91,16 @@ const Education = () => {
             
             <div style={{ position: 'absolute', top: 0, left: 0, width: '100%', height: '100%', background: 'linear-gradient(90deg, rgba(79, 70, 229, 0.05) 0%, transparent 100%)', pointerEvents: 'none', borderRadius: '1rem' }}></div>
             
-            <div style={{ display: 'flex', alignItems: 'center', gap: '1rem', marginBottom: '1rem' }}>
+            <div style={{ display: 'flex', alignItems: 'center', gap: '0.75rem', flexWrap: 'wrap', marginBottom: '1rem' }}>
               <span style={{ display: 'inline-block', padding: '0.4rem 1.2rem', background: 'var(--selection-bg)', color: 'var(--accent-primary)', borderRadius: '999px', fontWeight: 700, fontSize: '0.9rem', border: '1px solid rgba(99,102,241,0.3)' }}>
                 {item.year}
               </span>
+              {index === 0 && (
+                <span style={{ display: 'inline-flex', alignItems: 'center', gap: '0.4rem', padding: '0.35rem 0.85rem', background: 'rgba(16, 185, 129, 0.1)', color: '#10b981', border: '1px solid rgba(16, 185, 129, 0.3)', borderRadius: '50px', fontSize: '0.8rem', fontWeight: 600 }}>
+                  <span style={{ width: '6px', height: '6px', borderRadius: '50%', background: '#10b981', display: 'inline-block' }}></span>
+                  Sedang Menempuh
+                </span>
+              )}
             </div>
             
             <h3 style={{ fontSize: '1.6rem', marginBottom: '0.5rem', color: 'var(--text-primary)', fontWeight: 700 }}>{item.degree}</h3>

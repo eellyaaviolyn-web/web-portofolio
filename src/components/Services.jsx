@@ -30,6 +30,12 @@ const Services = () => {
     <BsPalette size={32} color="var(--accent-primary)" />
   ];
 
+  const serviceTags = [
+    ['HTML5', 'CSS3', 'JavaScript', 'PHP', 'Tailwind'],
+    ['MySQL', 'Data Modeling', 'CRUD', 'Relational DB'],
+    ['Figma', 'Wireframing', 'Prototyping', 'UI/UX']
+  ];
+
   return (
     <section id="services" className="section container" style={{ paddingBottom: '6rem', position: 'relative', overflow: 'hidden' }}>
       <MarqueeText />
@@ -88,9 +94,18 @@ const Services = () => {
                   {service.title}
                 </h3>
                 
-                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', margin: 0 }}>
+                <p style={{ color: 'var(--text-secondary)', lineHeight: '1.7', margin: 0, flexGrow: 1 }}>
                   {service.desc}
                 </p>
+
+                {/* Tech Tags */}
+                <div style={{ display: 'flex', gap: '0.4rem', flexWrap: 'wrap', marginTop: '1.5rem', paddingTop: '1rem', borderTop: '1px solid var(--border-color)' }}>
+                  {serviceTags[index % serviceTags.length].map((tag, tIdx) => (
+                    <span key={tIdx} style={{ fontSize: '0.75rem', padding: '0.25rem 0.65rem', borderRadius: '50px', background: 'var(--selection-bg)', color: 'var(--accent-primary)', fontWeight: 600 }}>
+                      {tag}
+                    </span>
+                  ))}
+                </div>
               </GlowCard>
             </TiltCard>
           ))}
