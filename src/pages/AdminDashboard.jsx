@@ -41,7 +41,8 @@ const AdminDashboard = () => {
   }, []);
 
   const handleLogout = async () => {
-    await supabase.auth.signOut();
+    localStorage.removeItem('isAdminLoggedIn');
+    try { await supabase.auth.signOut(); } catch (e) {}
     navigate('/login');
   };
 

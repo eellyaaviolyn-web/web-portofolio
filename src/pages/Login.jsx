@@ -14,16 +14,35 @@ const Login = () => {
     e.preventDefault();
     setIsLoading(true);
 
-    const { data, error } = await supabase.auth.signInWithPassword({
-      email: email,
-      password: password,
-    });
+    const cleanInput = email.trim().toLowerCase();
 
-    if (error) {
-      toast.error(error.message || "Email atau password salah.");
-    } else if (data.session) {
+    // 🔑 Akun default admin portofolio
+    if (
+      (cleanInput === "admin" || cleanInput === "admin@zakia.com" || cleanInput === "eellyaaviolyn@gmail.com") &&
+      password === "vinzkiesaja"
+    ) {
+      localStorage.setItem("isAdminLoggedIn", "true");
       toast.success("Login berhasil! Selamat datang, Admin.");
       navigate("/admin");
+      setIsLoading(false);
+      return;
+    }
+
+    // Coba via Supabase Auth jika ada session
+    try {
+      const { data, error } = await supabase.auth.signInWithPassword({
+        email: email,
+        password: password,
+      });
+
+      if (error) {
+        toast.error(error.message || "Email atau password salah.");
+      } else if (data?.session) {
+        toast.success("Login berhasil! Selamat datang, Admin.");
+        navigate("/admin");
+      }
+    } catch {
+      toast.error("Email atau password salah.");
     }
     
     setIsLoading(false);
@@ -79,13 +98,13 @@ const Login = () => {
         </h2>
         <form onSubmit={handleLogin}>
           <div className="input-group">
-            <label className="input-label">Email</label>
+            <label className="input-label">Email / Username</label>
             <input
-              type="email"
+              type="text"
               className="input-field"
               value={email}
               onChange={(e) => setEmail(e.target.value)}
-              placeholder="Enter email"
+              placeholder="Masukkan email atau admin"
               required
             />
           </div>

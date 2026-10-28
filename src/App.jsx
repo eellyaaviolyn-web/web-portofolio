@@ -17,24 +17,34 @@ import { supabase } from './lib/supabase';
 // Lazy load Admin Dashboard for performance
 const AdminDashboard = lazy(() => import('./pages/AdminDashboard'));
 
-// Supabase Auth Check
+// Supabase & Local Admin Auth Check
 const ProtectedRoute = ({ children }) => {
   const [session, setSession] = useState(null);
   const [loading, setLoading] = useState(true);
 
   useEffect(() => {
+    // Cek jika login via admin local credentials
+    const isLocalAdmin = localStorage.getItem('isAdminLoggedIn') === 'true';
+    if (isLocalAdmin) {
+      setSession({ user: { email: 'admin' } });
+      setLoading(false);
+      return;
+    }
+
     supabase.auth.getSession().then(({ data: { session } }) => {
       setSession(session);
+      setLoading(false);
+    }).catch(() => {
       setLoading(false);
     });
 
     const {
       data: { subscription },
     } = supabase.auth.onAuthStateChange((_event, session) => {
-      setSession(session);
+      if (session) setSession(session);
     });
 
-    return () => subscription.unsubscribe();
+    return () => subscription?.unsubscribe?.();
   }, []);
 
   if (loading) return <div style={{ minHeight: '100vh', display: 'flex', alignItems: 'center', justifyContent: 'center' }}><div className="pulse-dot" style={{ width: '20px', height: '20px', background: 'var(--accent-primary)' }}></div></div>;
